@@ -73,16 +73,14 @@ sed -i -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
        -e 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/' /etc/makepkg.conf
 
 # AUR helper (yay)
-pacman -S git <<EOF
+pacman -S git go <<EOF
 y
 EOF
-sudo -u i bash <<EOT
-cd
-git clone https://aur.archlinux.org/yay.git
+userhome=$(eval echo ~$username)
+pushd $userhome
+sudo -u $username git clone https://aur.archlinux.org/yay.git
 cd yay
-sudo -ku $username makepkg -si <<EOF
-$userpasswd
-y
-EOF
-cd .. && rm -rf yay
-EOT
+sudo -u $username makepkg -sr
+popd
+rm -rf $userhome/yay
+pacman -Rns go
