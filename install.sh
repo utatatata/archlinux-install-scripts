@@ -88,7 +88,7 @@ rootpasswd=$ALIS_ROOT_PASSWD
 timedatectl set-ntp true
 
 # Partition the disks
-gdisk <<EOF
+gdisk $devicepathR <<EOF
 o
 y
 n
@@ -107,7 +107,7 @@ EOF
 
 # Format the partitions
 mkfs.fat -F32 $efi
-mkfs.ext4 $root
+mkfs.ext4 -F $root
 
 # Mount the file systems
 mount $root /mnt
@@ -116,7 +116,8 @@ mount $efi /mnt/boot
 
 # Select the mirrors
 mirrorlist=$(cat /etc/pacman.d/mirrorlist)
-grep --no-group-separator -A 1 'Japan' /etc/pacman.d/mirrorlist > /etc/pacman.d/mirrorlist
+japanmirrorlist=$(grep --no-group-separator -A 1 'Japan' /etc/pacman.d/mirrorlist)
+echo "$japanmirrorlist" > /etc/pacman.d/mirrorlist
 echo "$mirrorlist" >> /etc/pacman.d/mirrorlist
 
 # Install essential packages
@@ -135,10 +136,11 @@ hwclock --systohc
 # Localization
 localegen=$(cat /etc/locale.gen)
 cat <<EOF > /etc/locale.gen
-en_US.UTF-8
-ja_JP.UTF-8
+en_US.UTF-8 UTF-8
+ja_JP.UTF-8 UTF-8
 EOF
 echo "$localegen" >> /etc/locale.gen
+locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
 # Network configuration
@@ -180,6 +182,7 @@ options root=UUID=$(blkid -s UUID -o value $root) rw
 EOF
 
 # Automatic update
+mkdir -p /etc/pacman.d/hooks
 cat <<EOF > /etc/pacman.d/hooks/100-systemd-boot.hook
 [Trigger]
 Type = Package
