@@ -9,7 +9,7 @@ printf "\n\x1b[32mArch Linux Install Script (GUI Xfce)\x1b[m\n\n\n"
 
 if [[ ! -v  ALIS_USER_PASSWD ]]; then
   read -sp "User passwd: " ALIS_USER_PASSWD
-  echo ""
+  printf "\n\n"
 fi
 
 userpasswd="$ALIS_USER_PASSWD"
