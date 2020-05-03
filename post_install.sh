@@ -2,12 +2,12 @@
 
 set -eu
 
+printf "\x1b[32mArch Linux Install Script (Additional Settings)\x1b[m\n\n"
 
 #################### User name ####################
 
 if [[ ! -v  ALIS_USER_NAME ]]; then
-  printf "New user name: "
-  read ALIS_USER_NAME
+  read -p "New user name: " ALIS_USER_NAME
   echo ""
 fi
 
@@ -18,18 +18,15 @@ username=$ALIS_USER_NAME
 
 if [[ ! -v ALIS_USER_PASSWD ]]; then
   while true; do
+    read -sp "User password: " userpasswd1
     echo ""
-    printf "User password: "
-    read -s userpasswd1
-    echo ""
-    printf "Retype root password: "
-    read -s userpasswd2
+    read -sp "Retype root password: " userpasswd2
     echo ""
     if [[ "$userpasswd1" = "$userpasswd2" ]]; then
       ALIS_USER_PASSWD=$userpasswd1
       break
     else
-      echo 'Sorry, passwords do not match.'
+      printf "\x1b[31merror\x1b[m: passwords do not match\n\"
     fi
   done
 fi
@@ -86,3 +83,11 @@ rm -rf $userhome/yay
 pacman -Rns go <<EOF
 y
 EOF
+
+# Finish
+echo ""
+printf "+--------------------------+\n"
+printf "| \x1b[36mSuccessfully Installed!!\x1b[m |\n"
+printf "+--------------------------+\n\n"
+
+exit
