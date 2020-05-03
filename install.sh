@@ -127,12 +127,11 @@ pacstrap /mnt base base-devel linux linux-firmware networkmanager wpa_supplicant
 # Fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
-# Chroot
-IN="arch-chroot /mnt"
+# After that, work in chroot
 
 # Time zone
-$IN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-$IN hwclock --systohc
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+arch-chroot /mnt hwclock --systohc
 
 # Localization
 localegen=$(cat /mnt/etc/locale.gen)
@@ -141,7 +140,7 @@ en_US.UTF-8 UTF-8
 ja_JP.UTF-8 UTF-8
 EOF
 echo "$localegen" >> /mnt/etc/locale.gen
-$IN locale-gen
+arch-chroot /mnt locale-gen
 echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 
 # Network configuration
@@ -151,16 +150,16 @@ cat <<EOF >> /mnt/etc/hosts
 ::1		localhost
 127.0.1.1	$hostname.localdomain	$hostname
 EOF
-$IN systemctl enable NetworkManager
+arch-chroot /mnt systemctl enable NetworkManager
 
 # Root password
-$IN passwd <<EOF
+arch-chroot /mnt passwd <<EOF
 $rootpasswd
 $rootpasswd
 EOF
 
 # Installing the EFI boot manager
-$IN bootctl --path=/boot install
+arch-chroot /mnt bootctl --path=/boot install
 
 # Loader configuration
 cat <<EOF > /mnt/boot/loader/loader.conf
