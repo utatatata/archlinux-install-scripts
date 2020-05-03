@@ -2,7 +2,8 @@
 
 set -eu
 
-printf "\n\x1b[32mArch Linux Install Script (Additional Settings)\x1b[m\n\n"
+printf "\n\x1b[32mArch Linux Install Script (Additional Settings)\x1b[m\n\n\n"
+
 
 #################### User name ####################
 
@@ -29,6 +30,7 @@ if [[ ! -v ALIS_USER_PASSWD ]]; then
       printf "\x1b[31merror\x1b[m: passwords do not match\n\n"
     fi
   done
+  echo ""
 fi
 
 userpasswd=$ALIS_USER_PASSWD
@@ -85,9 +87,9 @@ y
 EOF
 
 # Finish
-echo ""
+printf "\n\n"
 printf "+--------------------------+\n"
 printf "| \x1b[36mSuccessfully Installed!!\x1b[m |\n"
-printf "+--------------------------+\n\n"
+printf "+--------------------------+\n\n\n"
 
 exit
