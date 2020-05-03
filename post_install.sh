@@ -83,4 +83,6 @@ cd yay
 sudo -u $username makepkg -sr
 popd
 rm -rf $userhome/yay
-pacman -Rns go
+pacman -Rns go <<EOF
+y
+EOF
