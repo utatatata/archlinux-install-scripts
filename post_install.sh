@@ -54,7 +54,7 @@ EOF
 
 # Privilege elevation
 cp /etc/sudoers /etc/newsudoers
-sed -i 's/#%wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/newsudoers
+sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/newsudoers
 visudo -qcf /etc/newsudoers
 if [[ "$?" = "0" ]]; then
   mv -f /etc/newsudoers /etc/sudoers
