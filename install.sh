@@ -88,7 +88,7 @@ rootpasswd=$ALIS_ROOT_PASSWD
 timedatectl set-ntp true
 
 # Partition the disks
-gdisk $devicepathR <<EOF
+gdisk $devicepath <<EOF
 o
 y
 n
