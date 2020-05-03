@@ -128,42 +128,42 @@ pacstrap /mnt base base-devel linux linux-firmware networkmanager wpa_supplicant
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Chroot
-arch-chroot /mnt
+IN="arch-chroot /mnt"
 
 # Time zone
-ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-hwclock --systohc
+$IN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+$IN hwclock --systohc
 
 # Localization
-localegen=$(cat /etc/locale.gen)
-cat <<EOF > /etc/locale.gen
+localegen=$(cat /mnt/etc/locale.gen)
+cat <<EOF > /mnt/etc/locale.gen
 en_US.UTF-8 UTF-8
 ja_JP.UTF-8 UTF-8
 EOF
-echo "$localegen" >> /etc/locale.gen
-locale-gen
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "$localegen" >> /mnt/etc/locale.gen
+$IN locale-gen
+echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 
 # Network configuration
-echo $hostname > /etc/hostname
-cat <<EOF >> /etc/hosts
+echo $hostname > /mnt/etc/hostname
+cat <<EOF >> /mnt/etc/hosts
 127.0.0.1	localhost
 ::1		localhost
 127.0.1.1	$hostname.localdomain	$hostname
 EOF
-systemctl enable NetworkManager
+$IN systemctl enable NetworkManager
 
 # Root password
-passwd <<EOF
+$IN passwd <<EOF
 $rootpasswd
 $rootpasswd
 EOF
 
 # Installing the EFI boot manager
-bootctl --path=/boot install
+$IN bootctl --path=/boot install
 
 # Loader configuration
-cat <<EOF > /boot/loader/loader.conf
+cat <<EOF > /mnt/boot/loader/loader.conf
 default  arch.conf
 timeout  4
 console-mode max
@@ -171,7 +171,7 @@ editor   no
 EOF
 
 # Adding loaders
-cat <<EOF > /boot/loader/entries/arch.conf
+cat <<EOF > /mnt/boot/loader/entries/arch.conf
 title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
@@ -180,8 +180,8 @@ options root=UUID=$(blkid -s UUID -o value $root) rw
 EOF
 
 # Automatic update
-mkdir -p /etc/pacman.d/hooks
-cat <<EOF > /etc/pacman.d/hooks/100-systemd-boot.hook
+mkdir -p /mnt/etc/pacman.d/hooks
+cat <<EOF > /mnt/etc/pacman.d/hooks/100-systemd-boot.hook
 [Trigger]
 Type = Package
 Operation = Upgrade
@@ -194,6 +194,5 @@ Exec = /usr/bin/bootctl update
 EOF
 
 # Finish
-exit
 umount -R /mnt
-poweroff
+exit
