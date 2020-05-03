@@ -48,7 +48,7 @@ efi=$devicepath$prefix"1"
 root=$devicepath$prefix"2"
 
 
-#################### Device interface type ####################
+#################### Host name ####################
 
 if [[ ! -v ALIS_HOSTNAME ]]; then
   printf "Host name: "
@@ -71,7 +71,7 @@ if [[ ! -v ALIS_ROOT_PASSWD ]]; then
     read -s rootpasswd2
     echo ""
     if [[ "$rootpasswd1" = "$rootpasswd2" ]]; then
-      ALIS_ROOT_PASSWD=rootpasswd1
+      ALIS_ROOT_PASSWD=$rootpasswd1
       break
     else
       echo 'Sorry, passwords do not match.'
