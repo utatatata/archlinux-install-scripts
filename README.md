@@ -10,7 +10,9 @@ This script should be run in the live environment.
 You need to be connedted to the Internet using `wifi-menu` or other tools before running.
 
 ```sh
-curl -o- https://raw.githubusercontent.com/utatatata/sushi/master/install.sh | bash
+curl -O https://raw.githubusercontent.com/utatatata/sushi/master/install.sh
+chmod +x install.sh
+./install.sh
 ```
 
 ### Post install
@@ -21,7 +23,9 @@ After running `install.sh` and reboot, you can run this script in the installed 
 Log in as root user, connect to the Internet, and run this script.
 
 ```sh
-curl -o https://raw.githubusercontent.com/utatatata/sushi/master/post_install.sh | bash
+curl -O https://raw.githubusercontent.com/utatatata/sushi/master/post_install.sh
+chmod +x post_install.sh
+./post_install.sh
 ```
 
 ### GUI
@@ -41,5 +45,7 @@ lspci | grep -e VGA -e 3D
 ```
 
 ```sh
-curl -o https://raw.githubusercontent.com/utatatata/sushi/master/gui_xfce.sh | bash
+curl -O https://raw.githubusercontent.com/utatatata/sushi/master/gui_xfce.sh
+chmod +x gui_xfce.sh
+./gui_xfce.sh
 ```
