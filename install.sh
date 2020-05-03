@@ -13,8 +13,6 @@ fi
 # TODO: check device path
 
 devicepath="${ALIS_INSTALL_DEVICE_PATH%/}"
-efi=$devicepath$prefix"1"
-root=$devicepath$prefix"2"
 
 
 #################### Device interface type ####################
@@ -46,6 +44,8 @@ if [[ "$ALIS_DEVICE_INTERFACE_TYPE" = "NVMe" ]]; then
 else
   prefix=""
 fi
+efi=$devicepath$prefix"1"
+root=$devicepath$prefix"2"
 
 
 #################### Device interface type ####################
