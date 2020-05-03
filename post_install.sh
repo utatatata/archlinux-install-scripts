@@ -2,7 +2,7 @@
 
 set -eu
 
-printf "\x1b[32mArch Linux Install Script (Additional Settings)\x1b[m\n\n"
+printf "\n\x1b[32mArch Linux Install Script (Additional Settings)\x1b[m\n\n"
 
 #################### User name ####################
 
@@ -11,7 +11,7 @@ if [[ ! -v  ALIS_USER_NAME ]]; then
   echo ""
 fi
 
-username=$ALIS_USER_NAME
+username="$ALIS_USER_NAME"
 
 
 #################### User passwd ####################
@@ -23,7 +23,7 @@ if [[ ! -v ALIS_USER_PASSWD ]]; then
     read -sp "Retype root password: " userpasswd2
     echo ""
     if [[ "$userpasswd1" = "$userpasswd2" ]]; then
-      ALIS_USER_PASSWD=$userpasswd1
+      ALIS_USER_PASSWD="$userpasswd1"
       break
     else
       printf "\x1b[31merror\x1b[m: passwords do not match\n\"
