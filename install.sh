@@ -2,11 +2,12 @@
 
 set -eu
 
+printf "\x1b[32mArch Linux Install Script (Base System)\x1b[m\n\n"
+
 #################### Install device path ####################
 
 if [[ ! -v  ALIS_INSTALL_DEVICE_PATH ]]; then
-  printf "Install device path: "
-  read ALIS_INSTALL_DEVICE_PATH
+  read -ep "Install device path: "  ALIS_INSTALL_DEVICE_PATH
   echo ""
 fi
 
@@ -20,11 +21,10 @@ devicepath="${ALIS_INSTALL_DEVICE_PATH%/}"
 if [[ ! -v ALIS_DEVICE_INTERFACE_TYPE || ! "$ALIS_DEVICE_INTERFACE_TYPE" =~ ^(SATA|NVMe)$ ]]; then
   echo "Device interface type"
   echo "   1) SATA 2) NVMe"
+  echo ""
 
   while true; do
-    echo ""
-    printf "Enter a selection (default=1): "
-    read select
+    read -p "Enter a selection (default=1): " select
     echo ""
 
     if [[ "$select" = "1" || "$select" = "" ]]; then
@@ -34,7 +34,7 @@ if [[ ! -v ALIS_DEVICE_INTERFACE_TYPE || ! "$ALIS_DEVICE_INTERFACE_TYPE" =~ ^(SA
       ALIS_DEVICE_INTERFACE_TYPE="NVMe"
       break
     else
-      echo "error: invalid value: $select is not between 1 and 2"
+      printf "\x1b[31merror\x1b[m: invalid value: $select is not between 1 and 2\n\n"
     fi
   done
 fi
@@ -51,8 +51,7 @@ root=$devicepath$prefix"2"
 #################### Host name ####################
 
 if [[ ! -v ALIS_HOSTNAME ]]; then
-  printf "Host name: "
-  read ALIS_HOSTNAME
+  read -p "Host name: " ALIS_HOSTNAME
   echo ""
 fi
 
@@ -63,17 +62,15 @@ hostname="$ALIS_HOSTNAME"
 
 if [[ ! -v ALIS_ROOT_PASSWD ]]; then
   while true; do
-    printf "Root password: "
-    read -s rootpasswd1
+    read -sp "Root password: " rootpasswd1
     echo ""
-    printf "Retype root password: "
-    read -s rootpasswd2
+    read -sp "Retype root password: " rootpasswd2
     echo ""
     if [[ "$rootpasswd1" = "$rootpasswd2" ]]; then
       ALIS_ROOT_PASSWD=$rootpasswd1
       break
     else
-      echo 'Sorry, passwords do not match.'
+      printf "\x1b[31merror\x1b[m: passwords do not match\n\n"
     fi
   done
 fi
