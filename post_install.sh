@@ -26,7 +26,7 @@ if [[ ! -v ALIS_USER_PASSWD ]]; then
     read -s userpasswd2
     echo ""
     if [[ "$userpasswd1" = "$userpasswd2" ]]; then
-      ALIS_USER_PASSWD=userpasswd1
+      ALIS_USER_PASSWD=$userpasswd1
       break
     else
       echo 'Sorry, passwords do not match.'
@@ -40,7 +40,9 @@ userpasswd=$ALIS_USER_PASSWD
 #################### POST INSTALL ####################
 
 # Swap file
-pacman -S systemd-swap
+pacman -S systemd-swap <<EOF
+y
+EOF
 systemctl enable systemd-swap
 
 # Add a new user
@@ -62,17 +64,25 @@ else
 fi
 
 # Utilizing multiple cores on compression
-pacman -S pigz pbzip2
+pacman -S pigz pbzip2 <<EOF
+y
+EOF
 sed -i -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
        -e  's/COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' \
        -e 's/COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(pbzip2 -c -f)/' \
        -e 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/' /etc/makepkg.conf
 
 # AUR helper (yay)
-pacman -S git
-git clone https://aur.archlinux.org/yay.git && cd yay
+pacman -S git <<EOF
+y
+EOF
+sudo -u i bash <<EOT
+cd
+git clone https://aur.archlinux.org/yay.git
+cd yay
 sudo -ku $username makepkg -si <<EOF
 $userpasswd
 y
 EOF
 cd .. && rm -rf yay
+EOT
