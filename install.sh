@@ -2,7 +2,7 @@
 
 set -eu
 
-printf "\x1b[32mArch Linux Install Script (Base System)\x1b[m\n\n"
+printf "\n\x1b[32mArch Linux Install Script (Base System)\x1b[m\n\n\n"
 
 #################### Install device path ####################
 
@@ -25,7 +25,6 @@ if [[ ! -v ALIS_DEVICE_INTERFACE_TYPE || ! "$ALIS_DEVICE_INTERFACE_TYPE" =~ ^(SA
 
   while true; do
     read -p "Enter a selection (default=1): " select
-    echo ""
 
     if [[ "$select" = "1" || "$select" = "" ]]; then
       ALIS_DEVICE_INTERFACE_TYPE="SATA"
@@ -37,6 +36,7 @@ if [[ ! -v ALIS_DEVICE_INTERFACE_TYPE || ! "$ALIS_DEVICE_INTERFACE_TYPE" =~ ^(SA
       printf "\x1b[31merror\x1b[m: invalid value: $select is not between 1 and 2\n\n"
     fi
   done
+  echo ""
 fi
 
 if [[ "$ALIS_DEVICE_INTERFACE_TYPE" = "NVMe" ]]; then
@@ -73,6 +73,7 @@ if [[ ! -v ALIS_ROOT_PASSWD ]]; then
       printf "\x1b[31merror\x1b[m: passwords do not match\n\n"
     fi
   done
+  echo ""
 fi
 
 rootpasswd=$ALIS_ROOT_PASSWD
@@ -191,9 +192,9 @@ EOF
 # Finish
 umount -R /mnt
 
-echo ""
+printf "\n\n"
 printf "+--------------------------+\n"
 printf "| \x1b[36mSuccessfully Installed!!\x1b[m |\n"
-printf "+--------------------------+\n\n"
+printf "+--------------------------+\n\n\n"
 
 exit
