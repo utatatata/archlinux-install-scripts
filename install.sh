@@ -106,6 +106,7 @@ y
 EOF
 
 # Format the partitions
+umount -R /mnt && true
 mkfs.fat -F32 $efi
 mkfs.ext4 -F $root
 
