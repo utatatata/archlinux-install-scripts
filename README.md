@@ -10,7 +10,7 @@ This script should be run in the live environment.
 You need to be connedted to the Internet using `wifi-menu` or other tools before running.
 
 ```sh
-curl -o https://raw.githubusercontent.com/utatatata/sushi/master/install.sh | bash
+curl -o- https://raw.githubusercontent.com/utatatata/sushi/master/install.sh | bash
 ```
 
 ### Post install
