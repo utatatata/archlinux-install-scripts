@@ -29,14 +29,14 @@ videodriver=$ALIS_VIDEO_DRIVER
 
 # Xorg
 sudo -K
-yay --sudoflags -S -S xorg-server $videodriver <<EOF
+yay --sudoflags -S --sudoloop -S xorg-server $videodriver <<EOF
 $userpasswd
 y
 EOF
 
 # Display Manager (LightDM)
 sudo -K
-yay --sudoflags -S -S lightdm lightdm-gtk-greeter <<EOF
+yay --sudoflags -S --sudoloop -S lightdm lightdm-gtk-greeter <<EOF
 $userpasswd
 y
 EOF
@@ -47,7 +47,7 @@ EOF
 
 # Xfce
 sudo -K
-yay --sudoflags -S -S xfce4 gamin <<EOF
+yay --sudoflags -S --sudoloop -S xfce4 gamin <<EOF
 $userpasswd
 
 y
@@ -58,14 +58,14 @@ EOF
 
 # Audio
 sudo -K
-yay --sudoflags -S -S alsa-utils pulse-audio <<EOF
+yay --sudoflags -S --sudoloop -S alsa-utils pulse-audio <<EOF
 $userpasswd
 y
 EOF
 
 # Fcitx
 sudo -K
-yay --sudoflags -S -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
+yay --sudoflags -S --sudoloop -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
 $userpasswd
 y
 EOF
