@@ -39,6 +39,10 @@ userpasswd=$ALIS_USER_PASSWD
 
 #################### POST INSTALL ####################
 
+# Swap file
+pacman -S systemd-swap
+systemctl enable systemd-swap
+
 # Add a new user
 useradd -m -G wheel -s /bin/bash $username
 passwd $username <<EOF
