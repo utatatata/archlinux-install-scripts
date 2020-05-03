@@ -122,7 +122,7 @@ echo "$japanmirrorlist" > /etc/pacman.d/mirrorlist
 echo "$mirrorlist" >> /etc/pacman.d/mirrorlist
 
 # Install essential packages
-pacstrap /mnt base base-devel linux linux-firmware networkmanager wpa_supplicant nano vi vim man-db man-pages texinfo intel-ucode systemd-swap
+pacstrap /mnt base base-devel linux linux-firmware networkmanager wpa_supplicant nano vi vim man-db man-pages texinfo intel-ucode
 
 # Fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -152,9 +152,6 @@ cat <<EOF >> /etc/hosts
 127.0.1.1	$hostname.localdomain	$hostname
 EOF
 systemctl enable NetworkManager
-
-# Swap file
-systemctl enable systemd-swap
 
 # Root password
 passwd <<EOF
