@@ -17,7 +17,7 @@ devicepath="${ALIS_INSTALL_DEVICE_PATH%/}"
 
 #################### Device interface type ####################
 
-if [[ ! -v ALIS_DEVICE_INTERFACE_TYPE || ! "$ALIS_DEVICE_INTERFACE_TYPE" =~ ^(SATA|MVNe)$ ]]; then
+if [[ ! -v ALIS_DEVICE_INTERFACE_TYPE || ! "$ALIS_DEVICE_INTERFACE_TYPE" =~ ^(SATA|NVMe)$ ]]; then
   echo "Device interface type"
   echo "   1) SATA 2) NVMe"
 
