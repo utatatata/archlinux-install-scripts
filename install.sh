@@ -195,7 +195,7 @@ EOF
 umount -R /mnt
 
 printf "+--------------------------+\n"
-printf "| \x1b[35mSuccessfully Installed!!\x1b[m |\n"
+printf "| \x1b[36mSuccessfully Installed\!\!\x1b[m |\n"
 printf "+--------------------------+\n"
 
 exit
