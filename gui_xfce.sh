@@ -2,28 +2,30 @@
 
 set -eu
 
+printf "\n\x1b[32mArch Linux Install Script (GUI Xfce)\x1b[m\n\n\n"
+
 
 #################### User passwd ####################
 
 if [[ ! -v  ALIS_USER_PASSWD ]]; then
-  printf "User passwd: "
-  read -s ALIS_USER_PASSWD
+  read -sp "User passwd: " ALIS_USER_PASSWD
   echo ""
 fi
 
 userpasswd="$ALIS_USER_PASSWD"
 
 
-#################### User passwd ####################
+#################### Video driver ####################
 
 if [[ ! -v  ALIS_VIDEO_DRIVER ]]; then
-  printf "User passwd: "
-  read ALIS_VIDEO_DRIVER
+  read -p "Video driver: " ALIS_VIDEO_DRIVER
   echo ""
 fi
 
 videodriver=$ALIS_VIDEO_DRIVER
 
+
+#################### INSTALL ####################
 
 # Xorg
 yay -S xorg-server $videodriver <<EOF
@@ -50,11 +52,12 @@ y
 EOF
 sudo -K
 
-# AUdio
+# Audio
 yay -S alsa-utils pulse-audio <<EOF
 $userpasswd
 y
 EOF
+sudo -K
 
 # Fcitx
 yay -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
@@ -69,3 +72,10 @@ export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 EOF
 
+# Finish
+printf "\n\n"
+printf "+--------------------------+\n"
+printf "| \x1b[36mSuccessfully Installed!!\x1b[m |\n"
+printf "+--------------------------+\n\n\n"
+
+exit
