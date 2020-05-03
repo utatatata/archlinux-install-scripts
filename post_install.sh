@@ -79,7 +79,7 @@ userhome=$(eval echo ~$username)
 pushd $userhome
 sudo -u $username git clone https://aur.archlinux.org/yay.git
 cd yay
-sudo -u $username makepkg -sr
+sudo -u $username makepkg -i
 popd
 rm -rf $userhome/yay
 pacman -Rns go <<EOF
