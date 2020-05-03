@@ -28,20 +28,25 @@ videodriver=$ALIS_VIDEO_DRIVER
 #################### INSTALL ####################
 
 # Xorg
+sudo -K
 yay -S xorg-server $videodriver <<EOF
 $userpasswd
 y
 EOF
-sudo -K
 
 # Display Manager (LightDM)
+sudo -K
 yay -S lightdm lightdm-gtk-greeter <<EOF
 $userpasswd
 y
 EOF
 sudo -K
+sudo systemctl enable lightdm <<EOF
+$userpasswd
+EOF
 
 # Xfce
+sudo -K
 yay -S xfce4 gamin <<EOF
 $userpasswd
 
@@ -50,21 +55,20 @@ n
 n
 y
 EOF
-sudo -K
 
 # Audio
+sudo -K
 yay -S alsa-utils pulse-audio <<EOF
 $userpasswd
 y
 EOF
-sudo -K
 
 # Fcitx
+sudo -K
 yay -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
 $userpasswd
 y
 EOF
-sudo -K
 
 cat <<EOF >> ~/.xprofile
 export GTK_IM_MODULE=fcitx
