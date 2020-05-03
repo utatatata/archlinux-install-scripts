@@ -63,7 +63,6 @@ hostname="$ALIS_HOSTNAME"
 
 if [[ ! -v ALIS_ROOT_PASSWD ]]; then
   while true; do
-    echo ""
     printf "Root password: "
     read -s rootpasswd1
     echo ""
@@ -194,4 +193,9 @@ EOF
 
 # Finish
 umount -R /mnt
+
+printf "+--------------------------+\n"
+printf "| \x1b[35mSuccessfully Installed!!\x1b[m |\n"
+printf "+--------------------------+\n"
+
 exit
