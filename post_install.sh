@@ -26,7 +26,7 @@ if [[ ! -v ALIS_USER_PASSWD ]]; then
       ALIS_USER_PASSWD="$userpasswd1"
       break
     else
-      printf "\x1b[31merror\x1b[m: passwords do not match\n\"
+      printf "\x1b[31merror\x1b[m: passwords do not match\n\n"
     fi
   done
 fi
