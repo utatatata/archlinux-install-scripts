@@ -90,9 +90,6 @@ rootpasswd=$ALIS_ROOT_PASSWD
 
 #################### INSTALL ####################
 
-# Synchronize the repository databases
-pacman -Sy
-
 # Update the system clock
 timedatectl set-ntp true
 
@@ -129,6 +126,7 @@ mkdir /mnt/boot
 mount $efi /mnt/boot
 
 # Select the mirrors
+pacman -Sy
 pacman -S reflector <<EOF
 y
 EOF
