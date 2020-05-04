@@ -2,14 +2,24 @@
 
 set -eu
 
-printf "\n\x1b[32mArch Linux Install Script (GUI Xfce)\x1b[m\n\n\n"
+# ANSI escape code (https://en.wikipedia.org/wiki/ANSI_escape_code)
+prefix="\x1b["
+suffix="m"
+RESET="${prefix}${suffix}"
+GREEN="${prefix}32${suffix}"
+CYAN="${prefix}36${suffix}"
+
+
+#################### TITLE  ####################
+printf "\n${GREEN}Arch Linux Install Script (GUI Xfce)${RESET}\n\n\n"
 
 
 #################### User passwd ####################
 
 if [[ ! -v  ALIS_USER_PASSWD ]]; then
-  read -sp "[sudo] password for $USER: " ALIS_USER_PASSWD
-  printf "\n\n"
+  read -sp "[sudo] password for $USER: " ALIS_USER_PASSWD && echo ""
+
+  echo ""
 fi
 
 userpasswd="$ALIS_USER_PASSWD"
@@ -79,7 +89,7 @@ fcitx 2> /dev/null
 while true; do
   if [[ -e ~/.config/fcitx/config &&
         -e ~/.config/fcitx/profile ]]; then
-    sleep 1 # wait for the default settings to be written
+    sleep 1 # wait for a default settings to be written
     break
   fi
 done
@@ -106,10 +116,12 @@ $userpasswd
 y
 EOF
 
-# Finish
+
+#################### FINISH ####################
+
 printf "\n\n"
 printf "+--------------------------+\n"
-printf "| \x1b[36mSuccessfully Installed!!\x1b[m |\n"
+printf "| ${CYAN}Successfully Installed!!${RESET} |\n"
 printf "+--------------------------+\n\n\n"
 
 exit

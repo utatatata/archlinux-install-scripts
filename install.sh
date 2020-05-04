@@ -2,56 +2,60 @@
 
 set -eu
 
-printf "\n\x1b[32mArch Linux Install Script (Base System)\x1b[m\n\n\n"
+# ANSI escape code (https://en.wikipedia.org/wiki/ANSI_escape_code)
+prefix="\x1b["
+suffix="m"
+RESET="${prefix}${suffix}"
+RED="${prefix}31${suffix}"
+GREEN="${prefix}32${suffix}"
+CYAN="${prefix}36${suffix}"
+
+error () {
+  printf "${RED}error${RESET}: ${1}\n"
+}
+
+
+#################### TITLE  ####################
+printf "\n${GREEN}Arch Linux Install Script (Base System)${RESET}\n\n\n"
+
 
 #################### Install device path ####################
 
-if [[ ! -v  ALIS_INSTALL_DEVICE_PATH ]]; then
-  read -ep "Install device path: "  ALIS_INSTALL_DEVICE_PATH
+devices=$(lsblk -dlnpo NAME)
+if [[ ! -v  ALIS_INSTALL_DEVICE_PATH ||
+      "$(grep ^${ALIS_INSTALL_DEVICE_PATH}$ <<< ${devices})" = "" ]]; then
+  while true; do
+    read -ep "Install device path: "  ALIS_INSTALL_DEVICE_PATH
+
+    if [[ "$(grep ^${ALIS_INSTALL_DEVICE_PATH}$ <<< ${devices})" = "" ]]; then
+      error "invalid path: device '${ALIS_INSTALL_DEVICE_PATH}' doesn't exists"
+      echo ""
+    else
+      break
+    fi
+  done
+
   echo ""
 fi
-
-# TODO: check device path
 
 devicepath="${ALIS_INSTALL_DEVICE_PATH%/}"
 
 
-#################### Device interface type ####################
-
-if [[ ! -v ALIS_DEVICE_INTERFACE_TYPE || ! "$ALIS_DEVICE_INTERFACE_TYPE" =~ ^(SATA|NVMe)$ ]]; then
-  echo "Device interface type"
-  echo "   1) SATA 2) NVMe"
-  echo ""
-
-  while true; do
-    read -p "Enter a selection (default=1): " select
-
-    if [[ "$select" = "1" || "$select" = "" ]]; then
-      ALIS_DEVICE_INTERFACE_TYPE="SATA"
-      break
-    elif  [[ "$select" = "2" ]]; then
-      ALIS_DEVICE_INTERFACE_TYPE="NVMe"
-      break
-    else
-      printf "\x1b[31merror\x1b[m: invalid value: $select is not between 1 and 2\n\n"
-    fi
-  done
-  echo ""
-fi
-
-if [[ "$ALIS_DEVICE_INTERFACE_TYPE" = "NVMe" ]]; then
-  prefix="p"
-else
-  prefix=""
-fi
-efi=$devicepath$prefix"1"
-root=$devicepath$prefix"2"
-
-
 #################### Host name ####################
 
-if [[ ! -v ALIS_HOSTNAME ]]; then
-  read -p "Host name: " ALIS_HOSTNAME
+if [[ ! -v ALIS_HOSTNAME ||
+      "$ALIS_HOSTNAME" = "" ]]; then
+  while true; do
+    read -p "Host name: " ALIS_HOSTNAME
+
+    if [[ "$ALIS_HOSTNAME" = "" ]]; then
+      error "invalid value: hostname must not be empty"
+      echo ""
+    else
+      break
+    fi
+  done
+
   echo ""
 fi
 
@@ -60,19 +64,24 @@ hostname="$ALIS_HOSTNAME"
 
 #################### Root passwd ####################
 
-if [[ ! -v ALIS_ROOT_PASSWD ]]; then
+if [[ ! -v ALIS_ROOT_PASSWD ||
+      "$ALIS_ROOT_PASSWD" = "" ]]; then
   while true; do
-    read -sp "Root password: " rootpasswd1
-    echo ""
-    read -sp "Retype root password: " rootpasswd2
-    echo ""
-    if [[ "$rootpasswd1" = "$rootpasswd2" ]]; then
+    read -sp "Root password: " rootpasswd1 && echo ""
+    read -sp "Retype root password: " rootpasswd2 && echo ""
+
+    if [[ ! "$rootpasswd1" = "$rootpasswd2" ]]; then
+      error "passwords do not match"
+      echo ""
+    elif [[ "$rootpasswd1" = "" ]]; then
+      error "invalid value: password must not be empty"
+      echo ""
+    else
       ALIS_ROOT_PASSWD=$rootpasswd1
       break
-    else
-      printf "\x1b[31merror\x1b[m: passwords do not match\n\n"
     fi
   done
+
   echo ""
 fi
 
@@ -102,8 +111,13 @@ w
 y
 EOF
 
+partitions=$(lsblk -lnpo NAME $devicepath | tail -n+2)
+efi=$(echo "$partitions" | head -n 1)
+root==$(echo "$partitions" | tail -n 1 | head -n 1)
+
+
 # Format the partitions
-umount -R /mnt && true
+umount -R /mnt 2> /dev/null
 mkfs.fat -F32 $efi
 mkfs.ext4 -F $root
 
@@ -115,6 +129,7 @@ mount $efi /mnt/boot
 # Select the mirrors
 mirrorlist=$(cat /etc/pacman.d/mirrorlist)
 japanmirrorlist=$(grep --no-group-separator -A 1 'Japan' /etc/pacman.d/mirrorlist)
+# Insert at the top
 echo "$japanmirrorlist" > /etc/pacman.d/mirrorlist
 echo "$mirrorlist" >> /etc/pacman.d/mirrorlist
 
@@ -132,6 +147,7 @@ arch-chroot /mnt hwclock --systohc
 
 # Localization
 localegen=$(cat /mnt/etc/locale.gen)
+# Insert at the top
 cat <<EOF > /mnt/etc/locale.gen
 en_US.UTF-8 UTF-8
 ja_JP.UTF-8 UTF-8
@@ -189,12 +205,14 @@ When = PostTransaction
 Exec = /usr/bin/bootctl update
 EOF
 
-# Finish
+
+#################### FINISH ####################
+
 umount -R /mnt
 
 printf "\n\n"
 printf "+--------------------------+\n"
-printf "| \x1b[36mSuccessfully Installed!!\x1b[m |\n"
+printf "| ${CYAN}Successfully Installed!!${RESET} |\n"
 printf "+--------------------------+\n\n\n"
 
 exit
