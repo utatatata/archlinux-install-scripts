@@ -47,13 +47,9 @@ EOF
 
 # Xfce
 sudo -K
-yay --sudoflags -S --sudoloop -S xfce4 gamin <<EOF
+yay --sudoflags -S --sudoloop -S xfce4 <<EOF
 $userpasswd
 
-y
-n
-n
-y
 y
 EOF
 
