@@ -110,10 +110,16 @@ y
 EOF
 userhome=$(eval echo ~$username)
 pushd $userhome
-sudo -u $username git clone https://aur.archlinux.org/yay.git
+sudo -K
+sudo -u $username git clone https://aur.archlinux.org/yay.git <<EOF
+$userpasswd
+EOF
 cd yay
 # Build (makepkg is not allowed to run as root)
-sudo -u $username makepkg
+sudo -K
+sudo -u $username makepkg << EOF
+$userpasswd
+EOF
 # Install
 pacman -U ./*.pkg.tar.xz <<EOF
 y
