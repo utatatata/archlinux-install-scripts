@@ -127,7 +127,7 @@ yay --save --sudoloop
 
 # Pacman wrapper (Powerpill)
 sudo -K
-yay --sudoflags -S --sudoloop -S powerpill jq <<EOF
+yay --sudoflags -S -S powerpill jq <<EOF
 $userpasswd
 n
 y
