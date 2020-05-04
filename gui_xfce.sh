@@ -41,7 +41,7 @@ $userpasswd
 y
 EOF
 sudo -K
-sudo systemctl enable lightdm <<EOF
+sudo -S systemctl enable lightdm <<EOF
 $userpasswd
 EOF
 
@@ -58,15 +58,16 @@ EOF
 
 # Audio
 sudo -K
-yay --sudoflags -S --sudoloop -S alsa-utils pulse-audio <<EOF
+yay --sudoflags -S --sudoloop -S alsa-utils pulseaudio <<EOF
 $userpasswd
 y
 EOF
 
 # Fcitx
 sudo -K
-yay --sudoflags -S --sudoloop -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
+yay --sudoflags -S --sudoloop -S fcitx fcitx-im fcitx-mozc fcitx-configtool otf-ipafont <<EOF
 $userpasswd
+
 y
 EOF
 
