@@ -70,11 +70,8 @@ EOF
 
 # Fonts
 sudo -K
-yay --sudoflags -S --sudoloop -S otf-ipafont ttf-cica <<EOF
+yay --sudoflags -S --sudoloop -S otf-ipafont <<EOF
 $userpasswd
-y
-1
-n
 y
 EOF
 
