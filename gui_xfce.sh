@@ -68,17 +68,24 @@ $userpasswd
 y
 EOF
 
+cat <<EOF >> ~/.xprofile
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+EOF
+
+sed -i -e 's/#ActivateKey=/ActivateKey=ALT RALT/' \
+       -e 's/#InactivateKey=/InactivateKey=ALT LALT/' \
+    ~/.config/fcitx/config
+sed -i -e 's/#IMName=/IMName=mozc/' \
+       -e 's/mozc:False/mozc:True/' \
+    ~/.config/fcitx/profile
+
 # Fonts
 sudo -K
 yay --sudoflags -S --sudoloop -S otf-ipafont <<EOF
 $userpasswd
 y
-EOF
-
-cat <<EOF >> ~/.xprofile
-export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-export XMODIFIERS=@im=fcitx
 EOF
 
 # Browser(FireFox)
