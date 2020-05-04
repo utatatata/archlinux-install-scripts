@@ -90,8 +90,8 @@ rootpasswd=$ALIS_ROOT_PASSWD
 
 #################### INSTALL ####################
 
-# Synchronize the repository databases and update the system's packages
-pacman -Syu
+# Synchronize the repository databases
+pacman -Sy
 
 # Update the system clock
 timedatectl set-ntp true
