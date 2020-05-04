@@ -64,6 +64,7 @@ EOF
 sudo -K
 yay --sudoflags -S --sudoloop -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
 $userpasswd
+
 y
 EOF
 
@@ -88,6 +89,7 @@ sudo -K
 yay --sudoflags -S --sudoloop -S firefox <<EOF
 $userpasswd
 2
+y
 EOF
 
 # Finish
