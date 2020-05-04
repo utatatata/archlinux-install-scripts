@@ -127,13 +127,16 @@ yay --save --sudoloop
 
 # Pacman wrapper (Powerpill)
 sudo -K
-yay --sudoflags -S -S powerpill jq <<EOF
+sudo -u $username yay --sudoflags -S -S powerpill <<EOF
 $userpasswd
 n
 y
 y
 EOF
 sed -i -e 's/^\(SigLevel.*\)$/#\1\nSigLevel = PackageRequired/' /etc/pacman.conf
+pacman -S jq <<EOF
+y
+EOF
 rsyncservers=$(reflector -p rsync -c JP -c KR -c HK -c TW | sed -e '/^#/d' -e '/^$/d')
 jq ".rsync.servers = [$(echo "$rsyncservers" | sed -e 's/^\(.*\)$/\"\1\"/g' | paste -sd ',')]" /etc/powerpill/powerpill.json > /etc/powerpill/powerpill.json
 
