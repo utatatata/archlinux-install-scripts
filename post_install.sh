@@ -134,9 +134,9 @@ yay --save --sudoloop
 # Pacman wrapper (Powerpill)
 sudo -K
 sudo -u $username yay --sudoflags -S -S powerpill <<EOF
-$userpasswd
 n
-y
+n
+$userpasswd
 y
 EOF
 sed -i -e 's/^\(SigLevel.*\)$/#\1\nSigLevel = PackageRequired/' /etc/pacman.conf
