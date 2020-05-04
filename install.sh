@@ -90,6 +90,9 @@ rootpasswd=$ALIS_ROOT_PASSWD
 
 #################### INSTALL ####################
 
+# Synchronize the repository databases and update the system's packages
+pacman -Syu
+
 # Update the system clock
 timedatectl set-ntp true
 
@@ -113,7 +116,7 @@ EOF
 
 partitions=$(lsblk -lnpo NAME $devicepath | tail -n+2)
 efi=$(echo "$partitions" | head -n 1)
-root==$(echo "$partitions" | tail -n 1 | head -n 1)
+root=$(echo "$partitions" | tail -n 1 | head -n 1)
 
 # Format the partitions
 umount -R /mnt && true
@@ -126,7 +129,7 @@ mkdir /mnt/boot
 mount $efi /mnt/boot
 
 # Select the mirrors
-pacman -S reflector rsync <<EOF
+pacman -S reflector <<EOF
 y
 EOF
 reflector -p rsync -p https -p http -c JP -c KR -c HK -c TW --save /etc/pacman.d/mirrorlist
@@ -135,6 +138,7 @@ reflector -p rsync -p https -p http -c JP -c KR -c HK -c TW --save /etc/pacman.d
 pacstrap /mnt base base-devel linux linux-firmware networkmanager wpa_supplicant nano vi vim man-db man-pages texinfo intel-ucode rsync reflector
 
 # Automation for reflector
+mkdir -p /mnt/etc/pacman.d/hooks
 cat <<EOF > /mnt/etc/pacman.d/hooks/mirrorupgrade.hook
 [Trigger]
 Operation = Upgrade
