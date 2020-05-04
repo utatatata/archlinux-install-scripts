@@ -1,8 +1,50 @@
 # Arch Linux Install Scripts
 
+
+## Requirement
+
+- UEFI
+- Newer PC (if old, you may need to install additional drivers)
+
+
+## All Scripts
+
+### `install.sh`
+
+- Partition
+- Format the partitions
+- Install essential packages
+- Network configuration (NetrowkManager)
+- Install the EFI boot manager (systemd-boot)
+
+|  Mount point  |  Partition  |  Partition type  |  Size  |  Format  |
+| ---- | ---- | ---- | ---- | ---- |
+| /mnt/boot | first (e.g. /dev/sda1) | EFI system partition | 512 MiB | FAT32 |
+| /mnt | second | Linux | Remainder of the device | Ext4 |
+
+For swap space, you can use a swap file (`post_install.sh`).
+
+### `post_install.sh`
+
+- Create a swap file (systemd-swap)
+- Add a sudo user (wheel group)
+- Utilize multiple cores on compression for pacman
+- Install an AUR helper (yay)
+
+### `gui_xfce.sh`
+
+- Install a display server (Xorg) 
+- Install a display manager (LightDM)
+- Install a desktop environment (Xfce)
+- Install tools for sound management (ALSA, PulseAudio)
+- 日本語入力の設定 (Fcitx, Mozc)
+  - 左Altで英字入力、右Altで日本語入力
+- Install a web browser (FireFox)
+
+
 ## Usage
 
-### Install base system
+### Install Base System
 
 `install.sh`
 
@@ -15,7 +57,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### Post install
+### Additional Settings
 
 `post_install.sh`
 
