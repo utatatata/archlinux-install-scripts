@@ -54,6 +54,7 @@ y
 n
 n
 y
+y
 EOF
 
 # Audio
@@ -65,9 +66,18 @@ EOF
 
 # Fcitx
 sudo -K
-yay --sudoflags -S --sudoloop -S fcitx fcitx-im fcitx-mozc fcitx-configtool otf-ipafont <<EOF
+yay --sudoflags -S --sudoloop -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
 $userpasswd
+y
+EOF
 
+# Fonts
+sudo -K
+yay --sudoflags -S --sudoloop -S otf-ipafont ttf-cica <<EOF
+$userpasswd
+y
+1
+n
 y
 EOF
 
@@ -75,6 +85,13 @@ cat <<EOF >> ~/.xprofile
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
+EOF
+
+# Browser(FireFox)
+sudo -K
+yay --sudoflags -S --sudoloop -S firefox <<EOF
+$userpasswd
+2
 EOF
 
 # Finish
