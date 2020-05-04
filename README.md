@@ -5,6 +5,7 @@
 
 - UEFI
 - Newer PC (if old, you may need to install additional drivers)
+- Standard devices (similarly, you may need additional drivers)
 
 
 ## All Scripts
