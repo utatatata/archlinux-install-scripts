@@ -115,7 +115,6 @@ partitions=$(lsblk -lnpo NAME $devicepath | tail -n+2)
 efi=$(echo "$partitions" | head -n 1)
 root==$(echo "$partitions" | tail -n 1 | head -n 1)
 
-
 # Format the partitions
 umount -R /mnt && true
 mkfs.fat -F32 $efi
@@ -127,14 +126,41 @@ mkdir /mnt/boot
 mount $efi /mnt/boot
 
 # Select the mirrors
-mirrorlist=$(cat /etc/pacman.d/mirrorlist)
-japanmirrorlist=$(grep --no-group-separator -A 1 'Japan' /etc/pacman.d/mirrorlist)
-# Insert at the top
-echo "$japanmirrorlist" > /etc/pacman.d/mirrorlist
-echo "$mirrorlist" >> /etc/pacman.d/mirrorlist
+pacman -S reflector rsync <<EOF
+y
+EOF
+reflector -p rsync -p https -p http -c JP -c KR -c HK -c TW --save /etc/pacman.d/mirrorlist
 
 # Install essential packages
-pacstrap /mnt base base-devel linux linux-firmware networkmanager wpa_supplicant nano vi vim man-db man-pages texinfo intel-ucode
+pacstrap /mnt base base-devel linux linux-firmware networkmanager wpa_supplicant nano vi vim man-db man-pages texinfo intel-ucode rsync reflector
+
+# Automation for reflector
+cat <<EOF > /mnt/etc/pacman.d/hooks/mirrorupgrade.hook
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = pacman-mirrorlist
+
+[Action]
+Description = Updating pacman-mirrorlist with reflector and removing pacnew...
+When = PostTransaction
+Depends = reflector
+Exec = /bin/sh -c "reflector -c JP -c KR -c HK -c TW --latest 200 --age 24 --sort rate --save /etc/pacman.d/mirrorlist; rm -f /etc/pacman.d/mirrorlist.pacnew"
+EOF
+cat <<EOF > /mnt/etc/systemd/system/reflector.service
+[Unit]
+Description=Pacman mirrorlist update
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/reflector -p rsync -p https -p http -c JP -c KR -c HK -c TW --save /etc/pacman.d/mirrorlist
+
+[Install]
+RequiredBy=multi-user.target
+EOF
+arch-chroot /mnt systemctl enable reflector
 
 # Fstab
 genfstab -U /mnt >> /mnt/etc/fstab

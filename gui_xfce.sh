@@ -39,14 +39,14 @@ videodriver=$ALIS_VIDEO_DRIVER
 
 # Xorg
 sudo -K
-yay --sudoflags -S --sudoloop -S xorg-server $videodriver <<EOF
+yay --sudoflags -S -S xorg-server $videodriver <<EOF
 $userpasswd
 y
 EOF
 
 # Display Manager (LightDM)
 sudo -K
-yay --sudoflags -S --sudoloop -S lightdm lightdm-gtk-greeter <<EOF
+yay --sudoflags -S -S lightdm lightdm-gtk-greeter <<EOF
 $userpasswd
 y
 EOF
@@ -57,7 +57,7 @@ EOF
 
 # Xfce
 sudo -K
-yay --sudoflags -S --sudoloop -S xfce4 <<EOF
+yay --sudoflags -S -S xfce4 <<EOF
 $userpasswd
 
 y
@@ -65,14 +65,14 @@ EOF
 
 # Audio
 sudo -K
-yay --sudoflags -S --sudoloop -S alsa-utils pulseaudio xfce4-pulseaudio-plugin <<EOF
+yay --sudoflags -S -S alsa-utils pulseaudio xfce4-pulseaudio-plugin <<EOF
 $userpasswd
 y
 EOF
 
 # Fcitx
 sudo -K
-yay --sudoflags -S --sudoloop -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
+yay --sudoflags -S -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
 $userpasswd
 
 y
@@ -103,14 +103,14 @@ sed -i -e 's/#IMName=/IMName=mozc/' \
 
 # Fonts
 sudo -K
-yay --sudoflags -S --sudoloop -S otf-ipafont <<EOF
+yay --sudoflags -S -S otf-ipafont <<EOF
 $userpasswd
 y
 EOF
 
 # Browser(FireFox)
 sudo -K
-yay --sudoflags -S --sudoloop -S firefox <<EOF
+yay --sudoflags -S -S firefox <<EOF
 $userpasswd
 2
 y

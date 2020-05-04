@@ -103,7 +103,7 @@ sed -i -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
        -e 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/' \
     /etc/makepkg.conf
 
-# AUR helper (yay)
+# AUR helper (Yay)
 # Dependencies
 pacman -S git go <<EOF
 y
@@ -123,6 +123,23 @@ rm -rf $userhome/yay
 pacman -Rns go <<EOF
 y
 EOF
+yay --save --sudoloop
+
+# Pacman wrapper (Powerpill)
+sudo -K
+yay --sudoflags -S --sudoloop -S powerpill jq <<EOF
+$userpasswd
+n
+y
+y
+EOF
+sed -i -e 's/^\(SigLevel.*\)$/#\1\nSigLevel = PackageRequired/' /etc/pacman.conf
+rsyncservers=$(reflector -p rsync -c JP -c KR -c HK -c TW | sed -e '/^#/d' -e '/^$/d')
+jq ".rsync.servers = [$(echo "$rsyncservers" | sed -e 's/^\(.*\)$/\"\1\"/g' | paste -sd ',')]" /etc/powerpill/powerpill.json > /etc/powerpill/powerpill.json
+
+# Use powerpill instead of pacman inside yay
+yay --save --pacman --powerpill
+
 
 
 #################### FINISH ####################
