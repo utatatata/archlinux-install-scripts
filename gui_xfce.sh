@@ -74,6 +74,7 @@ export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 EOF
 
+fcitx
 sed -i -e 's/#ActivateKey=/ActivateKey=ALT RALT/' \
        -e 's/#InactivateKey=/InactivateKey=ALT LALT/' \
     ~/.config/fcitx/config
