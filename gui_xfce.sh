@@ -18,7 +18,7 @@ userpasswd="$ALIS_USER_PASSWD"
 #################### Video driver ####################
 
 if [[ ! -v  ALIS_VIDEO_DRIVER ]]; then
-  read -p "Video driver: " ALIS_VIDEO_DRIVER
+  read -p "Video driver(default=none): " ALIS_VIDEO_DRIVER
   echo ""
 fi
 
