@@ -79,6 +79,7 @@ fcitx 2> /dev/null
 while true; do
   if [[ -e ~/.config/fcitx/config &&
         -e ~/.config/fcitx/profile ]]; then
+    sleep 1 # wait for the default settings to be written
     break
   fi
 done
