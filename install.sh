@@ -117,7 +117,7 @@ root==$(echo "$partitions" | tail -n 1 | head -n 1)
 
 
 # Format the partitions
-umount -R /mnt 2> /dev/null
+umount -R /mnt && true
 mkfs.fat -F32 $efi
 mkfs.ext4 -F $root
 
