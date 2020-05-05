@@ -110,10 +110,7 @@ y
 EOF
 userhome=$(eval echo ~$username)
 pushd $userhome
-sudo -K
-sudo -Su $username git clone https://aur.archlinux.org/yay.git <<EOF
-$userpasswd
-EOF
+sudo -u $username git clone https://aur.archlinux.org/yay.git
 cd yay
 # Build (makepkg is not allowed to run as root)
 sudo -K
@@ -129,11 +126,11 @@ rm -rf $userhome/yay
 pacman -Rns go <<EOF
 y
 EOF
-yay --save --sudoloop
+sudo -u $username yay --save --sudoloop
 
 # Pacman wrapper (Powerpill)
 sudo -K
-sudo -Su $username yay --sudoflags -S -S powerpill <<EOF
+sudo -u $username yay --sudoflags -S -S powerpill <<EOF
 n
 n
 $userpasswd
