@@ -69,9 +69,7 @@ userpasswd=$ALIS_USER_PASSWD
 #################### POST INSTALL ####################
 
 # Swap file
-pacman -S systemd-swap <<EOF
-y
-EOF
+pacman --noconfirm -S systemd-swap
 systemctl enable systemd-swap
 
 # Add a new user
@@ -88,15 +86,14 @@ visudo -qcf /etc/newsudoers
 if [[ "$?" = "0" ]]; then
   mv -f /etc/newsudoers /etc/sudoers
 else
+  rm /etc/newsudoers
   printf "\n\n\n"
   error "Failed to edit /etc/sudoers"
   exit 1
 fi
 
 # Utilizing multiple cores on compression
-pacman -S pigz pbzip2 <<EOF
-y
-EOF
+pacman --noconfirm -S pigz pbzip2
 sed -i -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
        -e  's/COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' \
        -e 's/COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(pbzip2 -c -f)/' \
@@ -105,27 +102,21 @@ sed -i -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
 
 # AUR helper (Yay)
 # Dependencies
-pacman -S git go <<EOF
-y
-EOF
+pacman --noconfirm -S git go
 userhome=$(eval echo ~$username)
 pushd $userhome
 sudo -u $username git clone https://aur.archlinux.org/yay.git
 cd yay
 # Build (makepkg is not allowed to run as root)
-sudo -K
-sudo -Su $username makepkg << EOF
+sudo -u $username sudo -K
+sudo -Su $username makepkg <<EOF
 $userpasswd
 EOF
 # Install
-pacman -U ./*.pkg.tar.xz <<EOF
-y
-EOF
+pacman --noconfirm -U ./*.pkg.tar.xz
 popd
 rm -rf $userhome/yay
-pacman -Rns go <<EOF
-y
-EOF
+pacman --noconfirm -Rns go
 sudo -u $username yay --save --sudoloop
 
 
