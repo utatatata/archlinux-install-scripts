@@ -10,24 +10,22 @@ RED="${prefix}31${suffix}"
 GREEN="${prefix}32${suffix}"
 CYAN="${prefix}36${suffix}"
 
-error () {
+error() {
   printf "${RED}error${RESET}: ${1}\n"
 }
-
 
 #################### TITLE  ####################
 printf "\n${GREEN}Arch Linux Install Script (Base System)${RESET}\n\n\n"
 
-
 #################### Install device path ####################
 
 devices=$(lsblk -dlnpo NAME)
-if [[ ! -v  ALIS_INSTALL_DEVICE_PATH ||
-      "$(grep ^${ALIS_INSTALL_DEVICE_PATH}$ <<< ${devices})" = "" ]]; then
+if [[ ! -v ALIS_INSTALL_DEVICE_PATH || \
+  "$(grep ^${ALIS_INSTALL_DEVICE_PATH}$ <<<${devices})" = "" ]]; then
   while true; do
-    read -ep "Install device path: "  ALIS_INSTALL_DEVICE_PATH
+    read -ep "Install device path: " ALIS_INSTALL_DEVICE_PATH
 
-    if [[ "$(grep ^${ALIS_INSTALL_DEVICE_PATH}$ <<< ${devices})" = "" ]]; then
+    if [[ "$(grep ^${ALIS_INSTALL_DEVICE_PATH}$ <<<${devices})" = "" ]]; then
       error "invalid path: device '${ALIS_INSTALL_DEVICE_PATH}' doesn't exists"
       echo ""
     else
@@ -40,11 +38,10 @@ fi
 
 devicepath="${ALIS_INSTALL_DEVICE_PATH%/}"
 
-
 #################### Host name ####################
 
-if [[ ! -v ALIS_HOSTNAME ||
-      "$ALIS_HOSTNAME" = "" ]]; then
+if [[ ! -v ALIS_HOSTNAME || \
+  "$ALIS_HOSTNAME" = "" ]]; then
   while true; do
     read -p "Host name: " ALIS_HOSTNAME
 
@@ -61,11 +58,10 @@ fi
 
 hostname="$ALIS_HOSTNAME"
 
-
 #################### Root passwd ####################
 
-if [[ ! -v ALIS_ROOT_PASSWD ||
-      "$ALIS_ROOT_PASSWD" = "" ]]; then
+if [[ ! -v ALIS_ROOT_PASSWD || \
+  "$ALIS_ROOT_PASSWD" = "" ]]; then
   while true; do
     read -sp "Root password: " rootpasswd1 && echo ""
     read -sp "Retype root password: " rootpasswd2 && echo ""
@@ -86,7 +82,6 @@ if [[ ! -v ALIS_ROOT_PASSWD ||
 fi
 
 rootpasswd=$ALIS_ROOT_PASSWD
-
 
 #################### INSTALL ####################
 
@@ -128,14 +123,22 @@ mount $efi /mnt/boot
 # Select the mirrors
 pacman -Sy
 pacman --noconfirm -S reflector
-reflector -p rsync -p https -p http -c JP -c KR -c HK -c TW --save /etc/pacman.d/mirrorlist
+reflector \
+  -p rsync -p https -p http \
+  -c JP -c KR -c HK -c TW \
+  --save /etc/pacman.d/mirrorlist
 
 # Install essential packages
-pacstrap /mnt base base-devel linux linux-firmware networkmanager wpa_supplicant nano vi vim man-db man-pages texinfo intel-ucode rsync reflector
+pacstrap /mnt \
+  base base-devel linux linux-firmware \
+  networkmanager wpa_supplicant \
+  nano vi vim \
+  man-db man-pages texinfo \
+  intel-ucode rsync reflector
 
 # Automation for reflector
 mkdir -p /mnt/etc/pacman.d/hooks
-cat <<EOF > /mnt/etc/pacman.d/hooks/mirrorupgrade.hook
+cat <<EOF >/mnt/etc/pacman.d/hooks/mirrorupgrade.hook
 [Trigger]
 Operation = Upgrade
 Type = Package
@@ -147,7 +150,7 @@ When = PostTransaction
 Depends = reflector
 Exec = /bin/sh -c "reflector -c JP -c KR -c HK -c TW --latest 200 --age 24 --sort rate --save /etc/pacman.d/mirrorlist; rm -f /etc/pacman.d/mirrorlist.pacnew"
 EOF
-cat <<EOF > /mnt/etc/systemd/system/reflector.service
+cat <<EOF >/mnt/etc/systemd/system/reflector.service
 [Unit]
 Description=Pacman mirrorlist update
 Wants=network-online.target
@@ -163,7 +166,7 @@ EOF
 arch-chroot /mnt systemctl enable reflector
 
 # Fstab
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >>/mnt/etc/fstab
 
 # After that, work in chroot
 
@@ -174,17 +177,17 @@ arch-chroot /mnt hwclock --systohc
 # Localization
 localegen=$(cat /mnt/etc/locale.gen)
 # Insert at the top
-cat <<EOF > /mnt/etc/locale.gen
+cat <<EOF >/mnt/etc/locale.gen
 en_US.UTF-8 UTF-8
 ja_JP.UTF-8 UTF-8
 EOF
-echo "$localegen" >> /mnt/etc/locale.gen
+echo "$localegen" >>/mnt/etc/locale.gen
 arch-chroot /mnt locale-gen
-echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
+echo "LANG=en_US.UTF-8" >/mnt/etc/locale.conf
 
 # Network configuration
-echo $hostname > /mnt/etc/hostname
-cat <<EOF >> /mnt/etc/hosts
+echo $hostname >/mnt/etc/hostname
+cat <<EOF >>/mnt/etc/hosts
 127.0.0.1	localhost
 ::1		localhost
 127.0.1.1	$hostname.localdomain	$hostname
@@ -201,7 +204,7 @@ EOF
 arch-chroot /mnt bootctl --path=/boot install
 
 # Loader configuration
-cat <<EOF > /mnt/boot/loader/loader.conf
+cat <<EOF >/mnt/boot/loader/loader.conf
 default  arch.conf
 timeout  4
 console-mode max
@@ -209,7 +212,7 @@ editor   no
 EOF
 
 # Adding loaders
-cat <<EOF > /mnt/boot/loader/entries/arch.conf
+cat <<EOF >/mnt/boot/loader/entries/arch.conf
 title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /intel-ucode.img
@@ -219,7 +222,7 @@ EOF
 
 # Automatic update
 mkdir -p /mnt/etc/pacman.d/hooks
-cat <<EOF > /mnt/etc/pacman.d/hooks/100-systemd-boot.hook
+cat <<EOF >/mnt/etc/pacman.d/hooks/100-systemd-boot.hook
 [Trigger]
 Type = Package
 Operation = Upgrade
@@ -233,7 +236,6 @@ EOF
 
 # Unmount all the partitions
 umount -R /mnt
-
 
 #################### FINISH ####################
 

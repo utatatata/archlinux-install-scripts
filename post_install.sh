@@ -10,19 +10,17 @@ RED="${prefix}31${suffix}"
 GREEN="${prefix}32${suffix}"
 CYAN="${prefix}36${suffix}"
 
-error () {
+error() {
   printf "${RED}error${RESET}: ${1}\n"
 }
-
 
 #################### TITLE  ####################
 printf "\n${GREEN}Arch Linux Install Script (Additional Settings)${RESET}\n\n\n"
 
-
 #################### User name ####################
 
-if [[ ! -v ALIS_USER_NAME ||
-      "$ALIS_USER_NAME" = "" ]]; then
+if [[ ! -v ALIS_USER_NAME || \
+  "$ALIS_USER_NAME" = "" ]]; then
   while true; do
     read -p "New user name: " ALIS_USER_NAME
 
@@ -39,11 +37,10 @@ fi
 
 username="$ALIS_USER_NAME"
 
-
 #################### User passwd ####################
 
-if [[ ! -v ALIS_USER_PASSWD ||
-      "$ALIS_USER_PASSWD" = "" ]]; then
+if [[ ! -v ALIS_USER_PASSWD || \
+  "$ALIS_USER_PASSWD" = "" ]]; then
   while true; do
     read -sp "User password: " userpasswd1 && echo ""
     read -sp "Retype user password: " userpasswd2 && echo ""
@@ -65,7 +62,6 @@ fi
 
 userpasswd=$ALIS_USER_PASSWD
 
-
 #################### POST INSTALL ####################
 
 # Swap file
@@ -81,7 +77,8 @@ EOF
 
 # Privilege elevation
 cp /etc/sudoers /etc/newsudoers
-sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/newsudoers
+sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' \
+  /etc/newsudoers
 visudo -qcf /etc/newsudoers
 if [[ "$?" = "0" ]]; then
   mv -f /etc/newsudoers /etc/sudoers
@@ -95,10 +92,10 @@ fi
 # Utilizing multiple cores on compression
 pacman --noconfirm -S pigz pbzip2
 sed -i -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
-       -e  's/COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' \
-       -e 's/COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(pbzip2 -c -f)/' \
-       -e 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/' \
-    /etc/makepkg.conf
+  -e 's/COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' \
+  -e 's/COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(pbzip2 -c -f)/' \
+  -e 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/' \
+  /etc/makepkg.conf
 
 # AUR helper (Yay)
 # Dependencies
@@ -118,7 +115,6 @@ popd
 rm -rf $userhome/yay
 pacman --noconfirm -Rns go
 sudo -u $username yay --save --sudoloop
-
 
 #################### FINISH ####################
 

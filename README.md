@@ -1,12 +1,10 @@
 # Arch Linux Install Scripts
 
-
 ## Requirement
 
 - UEFI
 - New PC as possible (if old, you may need to install additional drivers)
 - Standard devices (similarly, you may need additional drivers)
-
 
 ## All Scripts
 
@@ -18,10 +16,10 @@
 - Network configuration (NetworkManager)
 - Install the EFI boot manager (systemd-boot)
 
-|  Mount point  |  Partition  |  Partition type  |  Size  |  Format  |
-| ---- | ---- | ---- | ---- | ---- |
-| /mnt/boot | first (e.g. /dev/sda1) | EFI system partition | 512 MiB | FAT32 |
-| /mnt | second | Linux | Remainder of the device | Ext4 |
+| Mount point | Partition              | Partition type       | Size                    | Format |
+| ----------- | ---------------------- | -------------------- | ----------------------- | ------ |
+| /mnt/boot   | first (e.g. /dev/sda1) | EFI system partition | 512 MiB                 | FAT32  |
+| /mnt        | second                 | Linux                | Remainder of the device | Ext4   |
 
 For swap space, you can use a swap file (`post_install.sh`).
 
@@ -34,12 +32,12 @@ For swap space, you can use a swap file (`post_install.sh`).
 
 ### `gui_xfce.sh`
 
-- Display server (Xorg) 
+- Display server (Xorg)
 - Display manager (LightDM)
 - Desktop environment (Xfce)
 - Install tools for sound management (ALSA, PulseAudio)
 - 日本語入力 (Fcitx, Mozc)
-  - 左Altで英字入力、右Altで日本語入力
+  - 左 Alt で英字入力、右 Alt で日本語入力
 - Web browser (FireFox)
 
 ## Usage
