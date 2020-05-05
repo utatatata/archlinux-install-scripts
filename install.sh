@@ -127,9 +127,7 @@ mount $efi /mnt/boot
 
 # Select the mirrors
 pacman -Sy
-pacman -S reflector <<EOF
-y
-EOF
+pacman --noconfirm -S reflector
 reflector -p rsync -p https -p http -c JP -c KR -c HK -c TW --save /etc/pacman.d/mirrorlist
 
 # Install essential packages
