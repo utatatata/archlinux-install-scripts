@@ -1,5 +1,7 @@
 # Arch Linux Install Scripts
 
+Scripts for Arch Linux installation
+
 ## Requirement
 
 - UEFI
