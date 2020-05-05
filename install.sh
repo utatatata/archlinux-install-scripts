@@ -233,10 +233,11 @@ When = PostTransaction
 Exec = /usr/bin/bootctl update
 EOF
 
+# Unmount all the partitions
+umount -R /mnt
+
 
 #################### FINISH ####################
-
-umount -R /mnt
 
 printf "\n\n"
 printf "+--------------------------+\n"

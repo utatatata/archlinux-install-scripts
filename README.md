@@ -41,7 +41,6 @@ For swap space, you can use a swap file (`post_install.sh`).
 - 日本語入力の設定 (Fcitx, Mozc)
   - 左Altで英字入力、右Altで日本語入力
 - Install a web browser (FireFox)
-- Install pacman wrapper (Powerpill)
 
 ## Usage
 
