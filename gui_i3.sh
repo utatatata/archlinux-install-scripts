@@ -93,7 +93,7 @@ $userpasswd
 EOF
 mkdir -p ~/.config/i3
 cat /etc/i3/config >~/.config/i3/config
-sed -ie 's/Mod1/\$mod/g' \
+sed -i -e 's/Mod1/\$mod/g' \
   -e "1s:^\(.*\)$:\1\n\nset \$mod ${modkey}\n:" \
   ~/.config/i3/config
 
@@ -242,7 +242,7 @@ EOF
 cat <<EOF >~/.config/fish/config.fish
 if not functions -q fisher
     set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
-    curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
+    curl https://git.io/fisher --create-dirs -sLo \$XDG_CONFIG_HOME/fish/functions/fisher.fish
     fish -c fisher
 end
 EOF
