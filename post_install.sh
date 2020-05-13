@@ -116,6 +116,13 @@ rm -rf $userhome/yay
 pacman --noconfirm -Rns go
 sudo -u $username yay --save --sudoloop
 
+# Clock synchronization (systemd-timesyncd)
+cat <<EOF >>/etc/systemd/timesyncd.conf
+NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
+FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org
+EOF
+timedatectl set-ntp true
+
 #################### FINISH ####################
 
 printf "\n\n"

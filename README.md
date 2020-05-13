@@ -31,6 +31,7 @@ For swap space, you can use a swap file (`post_install.sh`).
 - Add a sudo user (wheel group)
 - Utilize multiple cores on compression for Pacman
 - Install an AUR helper (Yay)
+- Clock synchronization (systemd-timesyncd)
 
 ### `gui_xfce.sh`
 
