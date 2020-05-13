@@ -62,7 +62,11 @@ if [[ ! -v ALIS_I3_MODIFIER_KEY || ! \
     echo ""
 fi
 
-modkey="$ALIS_I3_MODIFIER_KEY"
+if [[ "$ALIS_I3_MODIFIER_KEY" = "win" ]]; then
+  modkey="Mod4"
+else
+  modkey="Mod1"
+fi
 
 #################### INSTALL ####################
 
@@ -87,8 +91,11 @@ sudo -K
 yay --sudoflags -S --noconfirm -S i3 xss-lock <<EOF
 $userpasswd
 EOF
-# Generate a config file
-i3-config-wizard -m "$modkey" 2>/dev/null
+mkdir -p ~/.config/i3
+cat /etc/i3/config >~/.config/i3/config
+sed -ie 's/Mod1/\$mod/g' \
+  -e "1s:^\(.*\)$:\1\n\nset \$mod ${modkey}\n:" \
+  ~/.config/i3/config
 
 # Status bar (Polybar)
 sudo -K
