@@ -38,10 +38,28 @@ For swap space, you can use a swap file (`post_install.sh`).
 - Display server (Xorg)
 - Display manager (LightDM)
 - Desktop environment (Xfce)
-- Install tools for sound management (ALSA, PulseAudio)
+- Tools for sound management (ALSA, PulseAudio)
 - 日本語入力 (Fcitx, Mozc)
   - 左 Alt で英字入力、右 Alt で日本語入力
 - Web browser (FireFox)
+
+### `gui_i3.sh`
+
+- Display server (Xorg)
+- Display manager (LightDM)
+- Window manager (i3)
+- Status bar (Polybar)
+- Terminal emulator (Hyper)
+- Launcher (Rofi)
+- Image viewer (Feh)
+- File manager (SpaceFM)
+- Tools for sound management (ALSA, PulseAudio)
+- 日本語入力 (Fcitx, Mozc)
+  - 左 Alt で英字入力、右 Alt で日本語入力
+- Web browser (FireFox)
+- Shell (fish)
+  - Fisher
+  - Powerline (bobthefish)
 
 ## Usage
 
@@ -78,12 +96,10 @@ $ logout
 
 ### GUI
 
+`gui_*.sh` (`gui_xfce.sh`, `gui_i3.sh`)
+
 These scripts should be run in the installed system.
 Please run it as a user other than root.
-
-#### Xfce
-
-`gui_xfce.sh`
 
 Run the following commands and you can find out which video driver you want to use in advance.
 
@@ -94,10 +110,10 @@ lspci | grep -e VGA -e 3D
 ```
 
 ```sh
-$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/gui_xfce.sh
-$ chmod +x gui_xfce.sh
-$ ./gui_xfce.sh
+$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/gui_*.sh
+$ chmod +x gui_*.sh
+$ ./gui_*.sh
 
-$ rm gui_xfce.sh
+$ rm gui_*.sh
 $ sudo reboot
 ```
