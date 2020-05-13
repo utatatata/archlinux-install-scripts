@@ -103,6 +103,7 @@ yay --sudoflags -S --noconfirm -S polybar <<EOF
 $userpasswd
 EOF
 mkdir -p ~/.config/polybar
+cat /usr/share/doc/polybar/config >~/.config/polybar/config
 cat <<EOF >~/.config/polybar/launch.sh
 #!/bin/bash
 
@@ -113,7 +114,7 @@ killall -q polybar
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
 # Launch Polybar, using default config location ~/.config/polybar/config
-polybar &
+polybar example &
 
 echo "Polybar launched..."
 EOF
@@ -130,8 +131,7 @@ sudo -K
 yay --sudoflags -S --noconfirm -S hyper ttf-cica <<EOF
 $userpasswd
 EOF
-mkdir -p ~/.config/Hyper
-cat <<EOF >~/.config/Hyper/.hyper.js
+cat <<EOF >~/.hyper.js
 module.exports = {
   config: {
     fontFamily: "Cica",
