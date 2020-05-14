@@ -120,6 +120,19 @@ rm -rf ${userhome}/yay
 pacman --noconfirm -Rns go
 sudo -u ${username} yay --save --sudoloop
 
+# Pacman wrapper (Powerpill)
+sudo -u ${username} sudo -K
+sudo -u ${username} yay --sudoflags -S --noconfirm -S powerpill jq <<EOF
+${userpasswd}
+EOF
+sed -e 's/^\(SigLevel.*\)$/#\1\nSigLevel = PackageRequired/' \
+  -i /etc/pacman.conf
+rsyncservers=$(reflector -p rsync -c JP -c KR -c HK -c TW | sed -e '/^#/d' -e '/^$/d')
+jq ".rsync.servers = [$(echo "${rsyncservers}" | sed -e 's/^\(.*\)$/\"\1\"/g' | paste -sd ',')]" \
+  /etc/powerpill/powerpill.json >/etc/powerpill/powerpill.json
+# Use powerpill instead of pacman inside yay
+sudo -u ${username} yay --save --pacman --powerpill
+
 # Clock synchronization (systemd-timesyncd)
 cat <<EOF >>/etc/systemd/timesyncd.conf
 NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
