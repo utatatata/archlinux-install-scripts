@@ -29,7 +29,7 @@ For swap space, you can use a swap file (`post_install.sh`).
 
 - Create a swap file (systemd-swap)
 - Add a sudo user (wheel group)
-- Utilize multiple cores on compression for Pacman
+- Utilize multiple cores for makepkg
 - Install an AUR helper (Yay)
 - Clock synchronization (systemd-timesyncd)
 
