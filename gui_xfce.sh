@@ -66,29 +66,17 @@ sudo -K
 yay --sudoflags -S --noconfirm -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
 ${userpasswd}
 EOF
-
 cat <<EOF >>${HOME}/.xprofile
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 EOF
-
-# Generate config files
-fcitx 2>/dev/null
-while true; do
-  if [[ -e ${HOME}/.config/fcitx/config && -e \
-    ${HOME}/.config/fcitx/profile ]]; then
-    sleep 1 # wait for a default settings to be written
-    break
-  fi
-done
-
-sed -e 's/#ActivateKey=/ActivateKey=ALT RALT/' \
-  -e 's/#InactivateKey=/InactivateKey=ALT LALT/' \
-  -i ${HOME}/.config/fcitx/config
-sed -e 's/#IMName=/IMName=mozc/' \
-  -e 's/mozc:False/mozc:True/' \
-  -i ${HOME}/.config/fcitx/profile
+sed -e '/^\[Hotkey\/ActivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_RALT/' \
+  -e '/^\[Hotkey\/InactivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_LALT/' \
+  -i /usr/share/fcitx/configdesc/config.desc
+sed -e '/^\[Profile\/IMName\]$/,/^\[/ s/^\(DefaultValue=\)$/\1mozc/' \
+  -e '/^\[Profile\/EnabledIMList\]$/,/^\[/ s/^\(DefaultValue=\)$/\1fcitx-keyboard-us:True,mozc:True/' \
+  -i /usr/share/fcitx/configdesc/profile.desc
 
 # Fonts
 sudo -K
