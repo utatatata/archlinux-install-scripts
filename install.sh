@@ -15,7 +15,7 @@ error() {
 }
 
 #################### TITLE  ####################
-printf "\n${GREEN}Arch Linux Install Script (Base System)${RESET}\n\n\n"
+printf "\n${CYAN}Arch Linux Install Script (Base System)${RESET}\n\n\n"
 
 #################### Install device path ####################
 
@@ -359,7 +359,7 @@ umount -R /mnt
 
 printf "\n\n"
 printf "+--------------------------+\n"
-printf "| ${CYAN}Successfully Installed!!${RESET} |\n"
+printf "| ${GREEN}Successfully Installed!!${RESET} |\n"
 printf "+--------------------------+\n\n\n"
 
 exit

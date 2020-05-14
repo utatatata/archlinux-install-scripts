@@ -15,7 +15,7 @@ error() {
 }
 
 #################### TITLE  ####################
-printf "\n${GREEN}Arch Linux Install Script (GUI i3)${RESET}\n\n\n"
+printf "\n${CYAN}Arch Linux Install Script (GUI i3)${RESET}\n\n\n"
 
 #################### User passwd ####################
 
@@ -245,7 +245,7 @@ fish -c fisher
 
 printf "\n\n"
 printf "+--------------------------+\n"
-printf "| ${CYAN}Successfully Installed!!${RESET} |\n"
+printf "| ${GREEN}Successfully Installed!!${RESET} |\n"
 printf "+--------------------------+\n\n\n"
 
 exit

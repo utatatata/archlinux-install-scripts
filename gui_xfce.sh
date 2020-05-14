@@ -10,7 +10,7 @@ GREEN="${prefix}32${suffix}"
 CYAN="${prefix}36${suffix}"
 
 #################### TITLE  ####################
-printf "\n${GREEN}Arch Linux Install Script (GUI Xfce)${RESET}\n\n\n"
+printf "\n${CYAN}Arch Linux Install Script (GUI Xfce)${RESET}\n\n\n"
 
 #################### User passwd ####################
 
@@ -94,7 +94,7 @@ EOF
 
 printf "\n\n"
 printf "+--------------------------+\n"
-printf "| ${CYAN}Successfully Installed!!${RESET} |\n"
+printf "| ${GREEN}Successfully Installed!!${RESET} |\n"
 printf "+--------------------------+\n\n\n"
 
 exit
