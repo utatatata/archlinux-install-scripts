@@ -91,6 +91,7 @@ fi
 
 # Utilizing multiple cores for makepkg
 sed -e "s/^\(#MAKEFLAGS=.*\)\$/\1\nMAKEFLAGS=\"-j$(nproc)\"/" \
+  -e 's/^\(LDFLAGS="\(.*\)"\)$/#\1\nLDFLAGS="\2,-z,muldefs"/' \
   -i /etc/makepkg.conf
 pacman --noconfirm -S pigz pbzip2
 sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
