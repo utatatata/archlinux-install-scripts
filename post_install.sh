@@ -90,9 +90,7 @@ else
 fi
 
 # Utilizing multiple cores for makepkg
-sed -e 's/^\(CFLAGS=.*\)$/#\1\nCFLAGS="-march=native -O2 -pipe -fstack-protector-strong"/' \
-  -e 's/^\(CXXFLAGS=.*\)$/#\1\nCXXFLAGS=${CFLAGS}/' \
-  -e "s/^\(#MAKEFLAGS=.*\)\$/\1\nMAKEFLAGS=\"-j$(nproc)\"/" \
+sed -e "s/^\(#MAKEFLAGS=.*\)\$/\1\nMAKEFLAGS=\"-j$(nproc)\"/" \
   -i /etc/makepkg.conf
 pacman --noconfirm -S pigz pbzip2
 sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
