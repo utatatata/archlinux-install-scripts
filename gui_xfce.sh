@@ -88,7 +88,7 @@ sed -e 's/#ActivateKey=/ActivateKey=ALT RALT/' \
   -i ${HOME}/.config/fcitx/config
 sed -e 's/#IMName=/IMName=mozc/' \
   -e 's/mozc:False/mozc:True/' \
-  -i ${HOEM}/.config/fcitx/profile
+  -i ${HOME}/.config/fcitx/profile
 
 # Fonts
 sudo -K
