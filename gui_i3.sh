@@ -106,6 +106,10 @@ $userpasswd
 EOF
 mkdir -p ~/.config/polybar
 cat /usr/share/doc/polybar/config >~/.config/polybar/config
+sed -e 's/^\(modules-left = .*\)$/#\1\nmodules-left = i3/' \
+    -e 's/^\(modules-center = .*\)$/#\1/' \
+    -e 's/^\(modules-right = .*\)$/#\1\nmodules-right = xbacklight pulseaudio wlan eth battery date powermenu/' \
+    -i ~/.config/polybar/config
 cat <<EOF >~/.config/polybar/launch.sh
 #!/bin/bash
 
