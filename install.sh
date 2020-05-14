@@ -21,11 +21,11 @@ printf "\n${GREEN}Arch Linux Install Script (Base System)${RESET}\n\n\n"
 
 devices=$(lsblk -dlnpo NAME)
 if [[ ! -v ALIS_INSTALL_DEVICE_PATH || \
-  "$(grep \"^${ALIS_INSTALL_DEVICE_PATH}$\" <<<${devices})" = "" ]]; then
+  "$(grep ^${ALIS_INSTALL_DEVICE_PATH}$ <<<${devices})" = "" ]]; then
   while true; do
     read -ep "Install device path: " ALIS_INSTALL_DEVICE_PATH
 
-    if [[ "$(grep \"^${ALIS_INSTALL_DEVICE_PATH}$\" <<<${devices})" = "" ]]; then
+    if [[ "$(grep ^${ALIS_INSTALL_DEVICE_PATH}$ <<<${devices})" = "" ]]; then
       error "invalid path: device '${ALIS_INSTALL_DEVICE_PATH}' doesn't exists"
       echo ""
     else
