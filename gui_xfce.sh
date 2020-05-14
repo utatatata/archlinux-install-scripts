@@ -79,7 +79,7 @@ ${userpasswd}
 EOF
 sudo -K
 sudo -S sed -e '/^\[Profile\/IMName\]$/,/^\[/ s/^\(DefaultValue=\)$/\1mozc/' \
-  -e '/^\[Profile\/EnabledIMList\]$/,/^\[/ s/^\(DefaultValue=\)$/\1fcitx-keyboard-us:True,mozc:True/' \
+  -e '/^\[Profile\/EnabledIMList\]$/,/^\[/ s/^\(DefaultValue=\)$/\1fcitx-keyboard-us:True,mozc:True,pinyin:False,shuangpin:False,wubi:False,wbpy:False/' \
   -i /usr/share/fcitx/configdesc/profile.desc <<EOF
 ${userpasswd}
 EOF
