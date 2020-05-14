@@ -95,6 +95,7 @@ mkdir -p ~/.config/i3
 cat /etc/i3/config >~/.config/i3/config
 sed -i -e 's/Mod1/\$mod/g' \
   -e "1s:^\(.*\)$:\1\n\nset \$mod ${modkey}\n:" \
+  -e 's/^\(exec i3-config-wizard\)$/#\1/' \
   ~/.config/i3/config
 
 # Status bar (Polybar)
