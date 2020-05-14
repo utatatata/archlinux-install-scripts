@@ -175,7 +175,7 @@ EOF
 
 # Audio
 sudo -K
-yay --sudoflags -S --noconfirm -S alsa-utils pulseaudio xfce4-pulseaudio-plugin <<EOF
+yay --sudoflags -S --noconfirm -S alsa-utils pulseaudio <<EOF
 $userpasswd
 EOF
 
