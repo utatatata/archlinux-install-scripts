@@ -129,7 +129,8 @@ sed -e 's/^\(SigLevel.*\)$/#\1\nSigLevel = PackageRequired/' \
   -i /etc/pacman.conf
 rsyncservers=$(reflector -p rsync -c JP -c KR -c HK -c TW | sed -e '/^#/d' -e '/^$/d')
 jq ".rsync.servers = [$(echo "${rsyncservers}" | sed -e 's/^\(.*\)$/\"\1\"/g' | paste -sd ',')]" \
-  /etc/powerpill/powerpill.json >/etc/powerpill/powerpill.json
+  /etc/powerpill/powerpill.json >/etc/powerpill/newpowerpill.json
+mv -f /etc/powerpill/newpowerpill.json /etc/powerpill/powerpill.json
 # Use powerpill instead of pacman inside yay
 sudo -u ${username} yay --save --pacman powerpill
 
