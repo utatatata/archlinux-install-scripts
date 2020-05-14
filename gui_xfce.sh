@@ -71,12 +71,18 @@ export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 EOF
-sed -e '/^\[Hotkey\/ActivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_RALT/' \
+sudo -K
+sudo -S sed -e '/^\[Hotkey\/ActivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_RALT/' \
   -e '/^\[Hotkey\/InactivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_LALT/' \
-  -i /usr/share/fcitx/configdesc/config.desc
-sed -e '/^\[Profile\/IMName\]$/,/^\[/ s/^\(DefaultValue=\)$/\1mozc/' \
+  -i /usr/share/fcitx/configdesc/config.desc <<EOF
+${userpasswd}
+EOF
+sudo -K
+sudo -S sed -e '/^\[Profile\/IMName\]$/,/^\[/ s/^\(DefaultValue=\)$/\1mozc/' \
   -e '/^\[Profile\/EnabledIMList\]$/,/^\[/ s/^\(DefaultValue=\)$/\1fcitx-keyboard-us:True,mozc:True/' \
-  -i /usr/share/fcitx/configdesc/profile.desc
+  -i /usr/share/fcitx/configdesc/profile.desc <<EOF
+${userpasswd}
+EOF
 
 # Fonts
 sudo -K
