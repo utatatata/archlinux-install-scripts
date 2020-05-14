@@ -72,7 +72,7 @@ fi
 
 # Xorg
 sudo -K
-yay --sudoflags -S --noconfirm -S xorg-server $videodriver <<EOF
+yay --sudoflags -S --noconfirm -S xorg-server $videodriver xorg-xrandr <<EOF
 $userpasswd
 EOF
 
