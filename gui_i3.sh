@@ -63,9 +63,10 @@ if [[ ! -v ALIS_I3_MODIFIER_KEY || ! \
 fi
 
 if [[ "$ALIS_I3_MODIFIER_KEY" = "win" ]]; then
-  modkey="Mod4"
+    modkey="Mod4"
 else
-  modkey="Mod1"
+    modkey="Mod1"
+
 fi
 
 #################### INSTALL ####################
@@ -93,10 +94,10 @@ $userpasswd
 EOF
 mkdir -p ~/.config/i3
 cat /etc/i3/config >~/.config/i3/config
-sed -i -e 's/Mod1/\$mod/g' \
-  -e "1s:^\(.*\)$:\1\n\nset \$mod ${modkey}\n:" \
-  -e 's/^\(exec i3-config-wizard\)$/#\1/' \
-  ~/.config/i3/config
+sed -e 's/Mod1/\$mod/g' \
+    -e "1s:^\(.*\)$:\1\n\nset \$mod ${modkey}\n:" \
+    -e 's/^\(exec i3-config-wizard\)$/#\1/' \
+    -i ~/.config/i3/config
 
 # Status bar (Polybar)
 sudo -K
