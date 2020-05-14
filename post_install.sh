@@ -131,7 +131,7 @@ rsyncservers=$(reflector -p rsync -c JP -c KR -c HK -c TW | sed -e '/^#/d' -e '/
 jq ".rsync.servers = [$(echo "${rsyncservers}" | sed -e 's/^\(.*\)$/\"\1\"/g' | paste -sd ',')]" \
   /etc/powerpill/powerpill.json >/etc/powerpill/powerpill.json
 # Use powerpill instead of pacman inside yay
-sudo -u ${username} yay --save --pacman --powerpill
+sudo -u ${username} yay --save --pacman powerpill
 
 # Clock synchronization (systemd-timesyncd)
 cat <<EOF >>/etc/systemd/timesyncd.conf
