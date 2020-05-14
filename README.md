@@ -29,8 +29,6 @@ Scripts for Arch Linux installation
 | /mnt/boot   | first (e.g. /dev/sda1) | EFI system partition | 512 MiB                 | FAT32  |
 | /mnt        | second                 | Linux                | Remainder of the device | Ext4   |
 
-For swap space, you can use a swap file (`post_install.sh`).
-
 ### `gui_xfce.sh`
 
 - Display server (Xorg)
@@ -66,7 +64,7 @@ For swap space, you can use a swap file (`post_install.sh`).
 `install.sh`
 
 This script should be run in the live environment.
-If you are using a wireless connection, you need to be connedted to the Internet using `wifi-menu` or other tools before running.
+If you are using a wireless connection, you need to be connected to the Internet using `wifi-menu` or other tools before running.
 
 ```sh
 $ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/install.sh
