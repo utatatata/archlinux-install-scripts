@@ -83,6 +83,51 @@ fi
 
 rootpasswd=${ALIS_ROOT_PASSWD}
 
+#################### User name ####################
+
+if [[ ! -v ALIS_USER_NAME || \
+  "${ALIS_USER_NAME}" = "" ]]; then
+  while true; do
+    read -p "New user name: " ALIS_USER_NAME
+
+    if [[ "${ALIS_USER_NAME}" = "" ]]; then
+      error "invalid value: user name must not be empty"
+      echo ""
+    else
+      break
+    fi
+  done
+
+  echo ""
+fi
+
+username="${ALIS_USER_NAME}"
+
+#################### User passwd ####################
+
+if [[ ! -v ALIS_USER_PASSWD || \
+  "${ALIS_USER_PASSWD}" = "" ]]; then
+  while true; do
+    read -sp "User password: " userpasswd1 && echo ""
+    read -sp "Retype user password: " userpasswd2 && echo ""
+
+    if [[ ! "${userpasswd1}" = "${userpasswd2}" ]]; then
+      error "passwords do not match"
+      echo ""
+    elif [[ "${userpasswd1}" = "" ]]; then
+      error "invalid value: password must not be empty"
+      echo ""
+    else
+      ALIS_USER_PASSWD=${userpasswd1}
+      break
+    fi
+  done
+
+  echo ""
+fi
+
+userpasswd=${ALIS_USER_PASSWD}
+
 #################### INSTALL ####################
 
 # Update the system clock
@@ -135,7 +180,9 @@ pacstrap /mnt \
   nano vi vim \
   man-db man-pages texinfo \
   intel-ucode \
-  rsync reflector
+  rsync reflector \
+  systemd-swap \
+  git
 
 # Automation for reflector
 mkdir -p /mnt/etc/pacman.d/hooks
@@ -231,6 +278,78 @@ Description = Updating systemd-boot
 When = PostTransaction
 Exec = /usr/bin/bootctl update
 EOF
+
+# Swap file
+arch-chroot /mnt systemctl enable systemd-swap
+
+# Add a new user
+arch-chroot /mnt useradd -m -G wheel -s /bin/bash ${username}
+arch-chroot /mnt passwd ${username} <<EOF
+${userpasswd}
+${userpasswd}
+EOF
+
+# Privilege elevation
+cp /mnt/etc/sudoers ./sudoers
+sed -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' \
+  -i ./sudoers
+visudo -qcf ./sudoers
+if [[ "$?" = "0" ]]; then
+  mv -f ./sudoers /mnt/etc/sudoers
+else
+  printf "\n\n\n"
+  error "Failed to edit /etc/sudoers"
+  exit 1
+fi
+
+# Utilizing multiple cores for makepkg
+sed -e "s/^\(#MAKEFLAGS=.*\)\$/\1\nMAKEFLAGS=\"-j$(nproc)\"/" \
+  -e 's/^\(LDFLAGS="\(.*\)"\)$/#\1\nLDFLAGS="\2,-z,muldefs"/' \
+  -i /mnt/etc/makepkg.conf
+arch-chroot /mnt pacman --noconfirm -S pigz pbzip2
+sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
+  -e 's/COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' \
+  -e 's/COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(pbzip2 -c -f)/' \
+  -e 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/' \
+  -i /mnt/etc/makepkg.conf
+
+# AUR helper (Yay)
+# Dependencies
+arch-chroot /mnt pacman --noconfirm -S go
+arch-chroot /mnt sudo -u ${username} git clone https://aur.archlinux.org/yay.git /home/${username}/yay
+# Build (makepkg is not allowed to run as root)
+arch-chroot /mnt bash -c \
+  "cd /home/${username}/yay && sudo -u ${username} sudo -K && sudo -Su ${username} makepkg" <<EOF
+${userpasswd}
+EOF
+# Install
+arch-chroot /mnt pacman --noconfirm -U /home/${username}/yay/*.pkg.tar.xz
+arch-chroot /mnt rm -rf /home/${userhome}/yay
+# Remove dependencies
+arch-chroot /mnt pacman --noconfirm -Rns go
+arch-chroot /mnt sudo -u ${username} yay --save --sudoloop
+
+# Pacman wrapper (Powerpill)
+arch-chroot /mnt bash -c \
+  "sudo -u ${username} sudo -K && sudo -u ${username} yay --sudoflags -S --noconfirm -S powerpill" <<EOF
+${userpasswd}
+EOF
+sed -e 's/^\(SigLevel.*\)$/#\1\nSigLevel = PackageRequired/' \
+  -i /mnt/etc/pacman.conf
+rsyncservers=$(reflector -p rsync -c JP -c KR -c HK -c TW | sed -e '/^#/d' -e '/^$/d')
+pacman --noconfirm -S jq
+jq ".rsync.servers = [$(echo "${rsyncservers}" | sed -e 's/^\(.*\)$/\"\1\"/g' | paste -sd ',')]" \
+  /mnt/etc/powerpill/powerpill.json >./powerpill.json
+mv -f ./powerpill.json /mnt/etc/powerpill/powerpill.json
+# Use powerpill instead of pacman inside yay
+arch-chroot /mnt sudo -u ${username} yay --save --pacman powerpill
+
+# Clock synchronization (systemd-timesyncd)
+cat <<EOF >>/mnt/etc/systemd/timesyncd.conf
+NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
+FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org
+EOF
+arch-chroot /mnt timedatectl set-ntp true
 
 # Unmount all the partitions
 umount -R /mnt

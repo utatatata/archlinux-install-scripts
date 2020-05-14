@@ -17,6 +17,12 @@ Scripts for Arch Linux installation
 - Install essential packages
 - Network configuration (NetworkManager)
 - Install the EFI boot manager (systemd-boot)
+- Create a swap file (systemd-swap)
+- Add a sudo user (wheel group)
+- Utilize multiple cores for makepkg
+- Install an AUR helper (Yay)
+- Pacman wrapper (Powerpill)
+- Clock synchronization (systemd-timesyncd)
 
 | Mount point | Partition              | Partition type       | Size                    | Format |
 | ----------- | ---------------------- | -------------------- | ----------------------- | ------ |
@@ -24,15 +30,6 @@ Scripts for Arch Linux installation
 | /mnt        | second                 | Linux                | Remainder of the device | Ext4   |
 
 For swap space, you can use a swap file (`post_install.sh`).
-
-### `post_install.sh`
-
-- Create a swap file (systemd-swap)
-- Add a sudo user (wheel group)
-- Utilize multiple cores for makepkg
-- Install an AUR helper (Yay)
-- Pacman wrapper (Powerpill)
-- Clock synchronization (systemd-timesyncd)
 
 ### `gui_xfce.sh`
 
@@ -79,28 +76,12 @@ $ ./install.sh
 $ reboot
 ```
 
-### Additional Settings
-
-`post_install.sh`
-
-After running `install.sh` and rebooting, you can run this script in the installed system.
-Log in as root user, connect to the Internet using NetworkManager (`nmtui` is easy), and run this script.
-
-```sh
-$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/post_install.sh
-$ chmod +x post_install.sh
-$ ./post_install.sh
-
-$ rm post_install.sh
-$ logout
-```
-
 ### GUI
 
 `gui_*.sh` (`gui_xfce.sh`, `gui_i3.sh`)
 
-These scripts should be run in the installed system.
-Please run it as a user other than root.
+After running `install.sh` and rebooting, you can run this script in the installed system.
+Log in a user other than root, connect to the Internet using NetworkManager (`nmtui` is easy), and run this script.
 
 Run the following commands and you can find out which video driver you want to use in advance.
 
