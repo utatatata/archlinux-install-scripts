@@ -10,7 +10,7 @@ Scripts for Arch Linux installation
 
 ## All Scripts
 
-### `install.sh`
+### `base.sh`
 
 - Partition
 - Format the partitions
@@ -29,7 +29,7 @@ Scripts for Arch Linux installation
 | /mnt/boot   | first (e.g. /dev/sda1) | EFI system partition | 512 MiB                 | FAT32  |
 | /mnt        | second                 | Linux                | Remainder of the device | Ext4   |
 
-### `gui_xfce.sh`
+### `gui-xfce.sh`
 
 - Display server (Xorg)
 - Display manager (LightDM)
@@ -39,7 +39,7 @@ Scripts for Arch Linux installation
   - 左 Alt で英字入力、右 Alt で日本語入力
 - Web browser (FireFox)
 
-### `gui_i3.sh`
+### `gui-i3.sh`
 
 - Display server (Xorg)
 - Official configuration utility to the RandR
@@ -62,24 +62,24 @@ Scripts for Arch Linux installation
 
 ### Install Base System
 
-`install.sh`
+`base.sh`
 
 This script should be run in the live environment.
 If you are using a wireless connection, you need to be connected to the Internet using `wifi-menu` or other tools before running.
 
 ```sh
-$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/install.sh
-$ chmod +x install.sh
-$ ./install.sh
+$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/base.sh
+$ chmod +x base.sh
+$ ./base.sh
 
 $ reboot
 ```
 
 ### GUI
 
-`gui_*.sh` (`gui_xfce.sh`, `gui_i3.sh`)
+`gui-*.sh` (`gui-xfce.sh`, `gui-i3.sh`)
 
-After running `install.sh` and rebooting, you can run this script in the installed system.
+After running `base.sh` and rebooting, you can run this script in the installed system.
 Log in a user other than root, connect to the Internet using NetworkManager (`nmtui` is easy), and run this script.
 
 Run the following commands and you can find out which video driver you want to use in advance.
@@ -91,10 +91,10 @@ lspci | grep -e VGA -e 3D
 ```
 
 ```sh
-$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/gui_*.sh
-$ chmod +x gui_*.sh
-$ ./gui_*.sh
+$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/gui-*.sh
+$ chmod +x gui-*.sh
+$ ./gui-*.sh
 
-$ rm gui_*.sh
+$ rm gui-*.sh
 $ sudo reboot
 ```
