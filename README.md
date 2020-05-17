@@ -7,27 +7,60 @@ Scripts for Arch Linux installation
 - UEFI
 - New PC as possible (if old, you may need to install additional drivers)
 - Standard devices (similarly, you may need additional drivers)
+- Standard US keyboard
 
 ## All Scripts
 
 ### `base.sh`
 
-- Partition
+- Partition the disks
 - Format the partitions
 - Install essential packages
+- Swap file (systemd-swap)
 - Network configuration (NetworkManager)
-- Install the EFI boot manager (systemd-boot)
-- Create a swap file (systemd-swap)
+- Boot loader (systemd-boot)
 - Add a sudo user (wheel group)
-- Utilize multiple cores for makepkg
-- Install an AUR helper (Yay)
+- Mirrors (Reflector)
+- Utilizing multiple cores for makepkg
+- AUR helper (Yay)
 - Pacman wrapper (Powerpill)
 - Clock synchronization (systemd-timesyncd)
 
-| Mount point | Partition              | Partition type       | Size                    | Format |
-| ----------- | ---------------------- | -------------------- | ----------------------- | ------ |
-| /mnt/boot   | first (e.g. /dev/sda1) | EFI system partition | 512 MiB                 | FAT32  |
-| /mnt        | second                 | Linux                | Remainder of the device | Ext4   |
+| Mount point | Partition              | Partition type GUID                                         | Size                    | File system |
+| ----------- | ---------------------- | ----------------------------------------------------------- | ----------------------- | ----------- |
+| /mnt/boot   | first (e.g. /dev/sda1) | C12A7328-F81F-11D2-BA4B-00A0C93EC93B: EFI system partition  | 260 MiB                 | FAT32       |
+| /mnt        | second                 | 4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709: Linux x86-64 root (/) | 32 GiB                  | Ext4        |
+| /mnt/home   | third                  | 933AC7E1-2EB4-4F13-B844-0E14E2AEF915: Linux /home           | Remainder of the device | Ext4        |
+
+#### References
+
+- [Installation guide - ArchWiki](https://wiki.archlinux.org/index.php/installation_guide)
+  - [Partitioning - ArchWiki](https://wiki.archlinux.org/index.php/Partitioning)
+    - [Partitioning#Example_layouts - ArchWik](https://wiki.archlinux.org/index.php/Partitioning#Example_layouts)
+    - [GPT fdisk - ArchWiki](https://wiki.archlinux.org/index.php/GPT_fdisk)
+  - [EFI system partition - ArchWiki](https://wiki.archlinux.org/index.php/EFI_system_partition)
+  - [Mirrors - ArchWiki](https://wiki.archlinux.org/index.php/Mirrors)
+    - [Reflector - ArchWiki](https://wiki.archlinux.org/index.php/Reflector)
+  - [Swap#Automated - ArchWik](https://wiki.archlinux.org/index.php/Swap#Automated)
+  - [NetworkManager - ArchWiki](https://wiki.archlinux.org/index.php/NetworkManager)
+  - [Arch boot process#Boot_loader - ArchWiki](https://wiki.archlinux.org/index.php/Arch_boot_process#Boot_loader)
+    - [systemd-boot - ArchWiki](https://wiki.archlinux.org/index.php/Systemd-boot)
+      - [Microcode - ArchWiki#systemd-boot](https://wiki.archlinux.org/index.php/Microcode#systemd-boot)
+- [General recommendations - ArchWiki](https://wiki.archlinux.org/index.php/General_recommendations)
+  - [Users and groups#User_management - ArchWiki](https://wiki.archlinux.org/index.php/Users_and_groups#User_management)
+  - [Sudo - ArchWiki](https://wiki.archlinux.org/index.php/Sudo)
+  - [Mirrors - ArchWiki](https://wiki.archlinux.org/index.php/Mirrors)
+    - [Reflector - ArchWiki](https://wiki.archlinux.org/index.php/Reflector)
+  - [Arch User Repository - ArchWiki](https://wiki.archlinux.org/index.php/Arch_User_Repository)
+    - [makepkg - ArchWiki](https://wiki.archlinux.org/index.php/Makepkg)
+      - [makepkg - ArchWiki#Improving_compile_times](https://wiki.archlinux.org/index.php/Makepkg#Improving_compile_times)
+      - [makepkg - ArchWiki#Utilizing_multiple_cores_on_compression](https://wiki.archlinux.org/index.php/Makepkg#Utilizing_multiple_cores_on_compression)
+    - [AUR helpers - ArchWiki](https://wiki.archlinux.org/index.php/AUR_helpers)
+      - [GitHub - Jguer/yay: Yet another Yogurt - An AUR Helper written in Go](https://github.com/Jguer/yay)
+  - [pacman/Tips and tricks - ArchWiki](https://wiki.archlinux.org/index.php/Pacman/Tips_and_tricks)
+    - [Powerpill - ArchWiki](https://wiki.archlinux.org/index.php/Powerpill)
+  - [System time#Time_synchronization - ArchWiki](https://wiki.archlinux.org/index.php/System_time#Time_synchronization)
+    - [systemd-timesyncd - ArchWiki](https://wiki.archlinux.org/index.php/Systemd-timesyncd)
 
 ### `gui-xfce.sh`
 
@@ -37,7 +70,22 @@ Scripts for Arch Linux installation
 - Tools for sound management (ALSA, PulseAudio)
 - 日本語入力 (Fcitx, Mozc)
   - 左 Alt で英字入力、右 Alt で日本語入力
+  - システムロケールは英語
 - Web browser (FireFox)
+
+#### References
+
+- [General recommendations - ArchWiki](https://wiki.archlinux.org/index.php/General_recommendations)
+- [Xorg - ArchWiki](https://wiki.archlinux.org/index.php/Xorg)
+- [Display manager - ArchWiki](https://wiki.archlinux.org/index.php/Display_manager)
+- [LightDM - ArchWiki](https://wiki.archlinux.org/index.php/LightDM)
+- [Desktop environment - ArchWiki](https://wiki.archlinux.org/index.php/Desktop_environment)
+- [Xfce - ArchWiki](https://wiki.archlinux.org/index.php/Xfce)
+- []()
+- []()
+- []()
+- []()
+- []()
 
 ### `gui-i3.sh`
 
@@ -57,6 +105,11 @@ Scripts for Arch Linux installation
 - Shell (fish)
   - Fisher
   - Powerline (bobthefish)
+
+#### References
+
+- []()
+- []()
 
 ## Usage
 
