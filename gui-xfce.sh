@@ -55,7 +55,7 @@ yay --sudoflags -S --noconfirm -S xfce4 <<EOF
 ${userpasswd}
 EOF
 
-# Audio
+# Sound
 sudo -K
 yay --sudoflags -S --noconfirm -S alsa-utils pulseaudio xfce4-pulseaudio-plugin <<EOF
 ${userpasswd}
@@ -63,7 +63,7 @@ EOF
 
 # Fcitx
 sudo -K
-yay --sudoflags -S --noconfirm -S fcitx fcitx-im fcitx-mozc fcitx-configtool <<EOF
+yay --sudoflags -S --noconfirm -S fcitx fcitx-im fcitx-mozc fcitx-configtool otf-ipafont <<EOF
 ${userpasswd}
 EOF
 cat <<EOF >>${HOME}/.xprofile
@@ -84,13 +84,7 @@ sudo -S sed -e '/^\[Profile\/IMName\]$/,/^\[/ s/^\(DefaultValue=\)$/\1mozc/' \
 ${userpasswd}
 EOF
 
-# Fonts
-sudo -K
-yay --sudoflags -S --noconfirm -S otf-ipafont <<EOF
-${userpasswd}
-EOF
-
-# Browser(FireFox)
+# Web Browser(FireFox)
 sudo -K
 yay --sudoflags -S --noconfirm -S firefox <<EOF
 ${userpasswd}

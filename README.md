@@ -32,6 +32,17 @@ Scripts for Arch Linux installation
 | /mnt        | second                 | 4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709: Linux x86-64 root (/) | 32 GiB                  | Ext4        |
 | /mnt/home   | third                  | 933AC7E1-2EB4-4F13-B844-0E14E2AEF915: Linux /home           | Remainder of the device | Ext4        |
 
+#### Available environment variables
+
+- ALIS_INSTALL_DEVICE_PATH
+  - e.g. `/dev/sda`
+- ALIS_HOSTNAME
+- ALIS_CPU_MANUFACTURER
+  - `intel` or `amd`
+- ALIS_ROOT_PASSWD
+- ALIS_USER_NAME
+- ALIS_USER_PASSWD
+
 #### References
 
 - [Installation guide - ArchWiki](https://wiki.archlinux.org/index.php/installation_guide)
@@ -76,21 +87,22 @@ Scripts for Arch Linux installation
 #### References
 
 - [General recommendations - ArchWiki](https://wiki.archlinux.org/index.php/General_recommendations)
-- [Xorg - ArchWiki](https://wiki.archlinux.org/index.php/Xorg)
-- [Display manager - ArchWiki](https://wiki.archlinux.org/index.php/Display_manager)
-- [LightDM - ArchWiki](https://wiki.archlinux.org/index.php/LightDM)
-- [Desktop environment - ArchWiki](https://wiki.archlinux.org/index.php/Desktop_environment)
-- [Xfce - ArchWiki](https://wiki.archlinux.org/index.php/Xfce)
-- []()
-- []()
-- []()
-- []()
-- []()
+  - [Xorg - ArchWiki](https://wiki.archlinux.org/index.php/Xorg)
+  - [Display manager - ArchWiki](https://wiki.archlinux.org/index.php/Display_manager)
+    - [LightDM - ArchWiki](https://wiki.archlinux.org/index.php/LightDM)
+  - [Desktop environment - ArchWiki](https://wiki.archlinux.org/index.php/Desktop_environment)
+    - [Xfce - ArchWiki](https://wiki.archlinux.org/index.php/Xfce)
+  - [Sound system - ArchWiki](https://wiki.archlinux.org/index.php/Sound_system)
+    - [Advanced Linux Sound Architecture - ArchWiki](https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture)
+    - [PulseAudio - ArchWiki](https://wiki.archlinux.org/index.php/PulseAudio)
+  - [Localization/Japanese - ArchWiki](https://wiki.archlinux.org/index.php/Localization/Japanese)
+    - [Fcitx - ArchWiki](https://wiki.archlinux.org/index.php/Fcitx)
+    - [Mozc - ArchWiki](https://wiki.archlinux.org/index.php/Mozc)
 
 ### `gui-i3.sh`
 
 - Display server (Xorg)
-- Official configuration utility to the RandR
+- Official configuration utility to the RandR (xrandr)
 - Display manager (LightDM)
 - Window manager (i3)
 - Status bar (Polybar)
@@ -105,6 +117,8 @@ Scripts for Arch Linux installation
 - Shell (fish)
   - Fisher
   - Powerline (bobthefish)
+
+#### Available environment variables
 
 #### References
 
@@ -137,7 +151,7 @@ Log in a user other than root, connect to the Internet using NetworkManager (`nm
 
 Run the following commands and you can find out which video driver you want to use in advance.
 
-[Xorg - ArchWiki](https://wiki.archlinux.org/index.php/Xorg#Driver_installation)
+[Xorg#Driver_installation - ArchWiki](https://wiki.archlinux.org/index.php/Xorg#Driver_installation)
 
 ```sh
 lspci | grep -e VGA -e 3D
