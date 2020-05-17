@@ -42,10 +42,11 @@ Scripts for Arch Linux installation
 ### `gui_i3.sh`
 
 - Display server (Xorg)
+- Official configuration utility to the RandR
 - Display manager (LightDM)
 - Window manager (i3)
 - Status bar (Polybar)
-- Terminal emulator (Hyper)
+- Terminal emulator (Alacritty)
 - Launcher (Rofi)
 - Image viewer (Feh)
 - File manager (SpaceFM)

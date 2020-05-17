@@ -73,7 +73,13 @@ fi
 
 # Xorg
 sudo -K
-yay --sudoflags -S --noconfirm -S xorg-server ${videodriver} xorg-xrandr <<EOF
+yay --sudoflags -S --noconfirm -S xorg-server ${videodriver} <<EOF
+${userpasswd}
+EOF
+
+# Official configuration utility to the RandR
+sudo -K
+yay --sudoflags -S --noconfirm -S xorg-xrandr arandr <<EOF
 ${userpasswd}
 EOF
 
@@ -132,25 +138,18 @@ cat <<EOF >>${HOME}/.config/i3/config
 exec_always --no-startup-id \$HOME/.config/polybar/launch.sh
 EOF
 
-# Terminal emulator (Hyper)
+# Terminal emulator (Alacritty)
 sudo -K
-yay --sudoflags -S --noconfirm -S hyper ttf-cica <<EOF
+yay --sudoflags -S --noconfirm -S alacritty <<EOF
 ${userpasswd}
 EOF
-cat <<EOF >${HOME}/.hyper.js
-module.exports = {
-  config: {
-    fontFamily: "Cica",
-  }
-}
-EOF
 # Config for i3
-sed -e 's/^\(.*exec i3-sensible-terminal.*\)$/#\1\nbindsym $mod+Return exec hyper/' \
+sed -e 's/^\(.*exec i3-sensible-terminal.*\)$/#\1\nbindsym $mod+Return exec alacritty/' \
     -i ${HOME}/.config/i3/config
 
 # Launcher (Rofi)
 sudo -K
-yay --sudoflags -S --noconfirm -S rofi xorg-xrdb <<EOF
+yay --sudoflags -S --noconfirm -S rofi <<EOF
 ${userpasswd}
 EOF
 # Download a theme
@@ -195,21 +194,18 @@ export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 EOF
-# Generate config files
-fcitx 2>/dev/null
-while true; do
-    if [[ -e ${HOME}/.config/fcitx/config && -e \
-        ${HOME}/.config/fcitx/profile ]]; then
-        sleep 1 # wait for a default settings to be written
-        break
-    fi
-done
-sed -i -e 's/#ActivateKey=/ActivateKey=ALT RALT/' \
-    -e 's/#InactivateKey=/InactivateKey=ALT LALT/' \
-    ${HOME}/.config/fcitx/config
-sed -i -e 's/#IMName=/IMName=mozc/' \
-    -e 's/mozc:False/mozc:True/' \
-    ${HOME}/.config/fcitx/profile
+sudo -K
+sudo -S sed -e '/^\[Hotkey\/ActivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_RALT/' \
+    -e '/^\[Hotkey\/InactivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_LALT/' \
+    -i /usr/share/fcitx/configdesc/config.desc <<EOF
+${userpasswd}
+EOF
+sudo -K
+sudo -S sed -e '/^\[Profile\/IMName\]$/,/^\[/ s/^\(DefaultValue=\)$/\1mozc/' \
+    -e '/^\[Profile\/EnabledIMList\]$/,/^\[/ s/^\(DefaultValue=\)$/\1fcitx-keyboard-us:True,mozc:True,pinyin:False,shuangpin:False,wubi:False,wbpy:False/' \
+    -i /usr/share/fcitx/configdesc/profile.desc <<EOF
+${userpasswd}
+EOF
 # Config for i3
 cat <<EOF >>${HOME}/.config/i3/config
 
