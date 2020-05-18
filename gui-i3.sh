@@ -221,7 +221,7 @@ EOF
 curl https://git.io/fisher --create-dirs -sLo ${HOME}/.config/fish/functions/fisher.fish
 # Powerline (Bobthefish)
 cat <<EOF >${HOME}/.config/fish/fishfile
-oh-my-fish/theme-bobthefish 
+oh-my-fish/theme-bobthefish
 EOF
 fish -c fisher
 
