@@ -84,6 +84,12 @@ Scripts for Arch Linux installation
   - システムロケールは英語
 - Web browser (FireFox)
 
+#### Available environment variables
+
+- ALIS_USER_PASSWD
+- ALIS_VIDEO_DRIVER
+  - See [Xorg#Driver_installation - ArchWiki](https://wiki.archlinux.org/index.php/Xorg#Driver_installation)
+
 #### References
 
 - [General recommendations - ArchWiki](https://wiki.archlinux.org/index.php/General_recommendations)
@@ -98,6 +104,8 @@ Scripts for Arch Linux installation
   - [Localization/Japanese - ArchWiki](https://wiki.archlinux.org/index.php/Localization/Japanese)
     - [Fcitx - ArchWiki](https://wiki.archlinux.org/index.php/Fcitx)
     - [Mozc - ArchWiki](https://wiki.archlinux.org/index.php/Mozc)
+  - [List of applications - ArchWiki](https://wiki.archlinux.org/index.php/List_of_applications)
+    - [Firefox - ArchWiki](https://wiki.archlinux.org/index.php/Firefox)
 
 ### `gui-i3.sh`
 
@@ -105,25 +113,53 @@ Scripts for Arch Linux installation
 - Official configuration utility to the RandR (xrandr)
 - Display manager (LightDM)
 - Window manager (i3)
-- Status bar (Polybar)
-- Terminal emulator (Alacritty)
-- Launcher (Rofi)
-- Image viewer (Feh)
-- File manager (SpaceFM)
+  - Status bar (Polybar)
+  - Terminal emulators (Alacritty)
+  - Application launchers (Rofi)
 - Tools for sound management (ALSA, PulseAudio)
 - 日本語入力 (Fcitx, Mozc)
   - 左 Alt で英字入力、右 Alt で日本語入力
 - Web browser (FireFox)
-- Shell (fish)
+- Command-line shell (fish)
   - Fisher
   - Powerline (bobthefish)
+- Graphical image viewers (Feh)
+- File managers (SpaceFM)
 
 #### Available environment variables
 
+- ALIS_USER_PASSWD
+- ALIS_VIDEO_DRIVER
+  - See [Xorg#Driver_installation - ArchWiki](https://wiki.archlinux.org/index.php/Xorg#Driver_installation)
+- ALIS_I3_MODIFIER_KEY
+  - `win` or `alt`
+
 #### References
 
-- []()
-- []()
+- [General recommendations - ArchWiki](https://wiki.archlinux.org/index.php/General_recommendations)
+  - [Xorg - ArchWiki](https://wiki.archlinux.org/index.php/Xorg)
+    - [xrandr - ArchWiki](https://wiki.archlinux.org/index.php/Xrandr)
+  - [Display manager - ArchWiki](https://wiki.archlinux.org/index.php/Display_manager)
+    - [LightDM - ArchWiki](https://wiki.archlinux.org/index.php/LightDM)
+  - [Window manager - ArchWiki](https://wiki.archlinux.org/index.php/Window_manager)
+    - [i3 - ArchWiki](https://wiki.archlinux.org/index.php/I3)
+      - [Polybar - ArchWiki](https://wiki.archlinux.org/index.php/Polybar)
+        - [Home · polybar/polybar Wiki · GitHub](https://github.com/polybar/polybar/wiki)
+  - [Sound system - ArchWiki](https://wiki.archlinux.org/index.php/Sound_system)
+    - [Advanced Linux Sound Architecture - ArchWiki](https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture)
+    - [PulseAudio - ArchWiki](https://wiki.archlinux.org/index.php/PulseAudio)
+  - [Localization/Japanese - ArchWiki](https://wiki.archlinux.org/index.php/Localization/Japanese)
+    - [Fcitx - ArchWiki](https://wiki.archlinux.org/index.php/Fcitx)
+    - [Mozc - ArchWiki](https://wiki.archlinux.org/index.php/Mozc)
+  - [List of applications - ArchWiki](https://wiki.archlinux.org/index.php/List_of_applications)
+    - [Alacritty - ArchWiki](https://wiki.archlinux.org/index.php/Alacritty)
+    - [Rofi - ArchWiki](https://wiki.archlinux.org/index.php/Rofi)
+    - [Firefox - ArchWiki](https://wiki.archlinux.org/index.php/Firefox)
+    - [Command-line shell - ArchWiki](https://wiki.archlinux.org/index.php/Command-line_shell)
+      - [fish - ArchWiki](https://wiki.archlinux.org/index.php/Fish)
+        - [GitHub - jorgebucaran/fisher: A package manager for the fish shell.](https://github.com/jorgebucaran/fisher)
+    - [Feh - ArchWiki](https://wiki.archlinux.org/index.php/Feh)
+    - [SpaceFM - ArchWiki](https://wiki.archlinux.org/index.php/SpaceFM)
 
 ## Usage
 
