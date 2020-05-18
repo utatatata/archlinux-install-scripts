@@ -171,9 +171,9 @@ This script should be run in the live environment.
 If you are using a wireless connection, you need to be connected to the Internet using `wifi-menu` or other tools before running.
 
 ```sh
-$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/base.sh
-$ chmod +x base.sh
-$ ./base.sh
+$ curl -sLO https://git.io/alis-base
+$ chmod +x alis-base
+$ ./alis-base
 
 $ reboot
 ```
@@ -194,10 +194,10 @@ lspci | grep -e VGA -e 3D
 ```
 
 ```sh
-$ curl -O https://raw.githubusercontent.com/utatatata/archlinux-install-scripts/master/gui-*.sh
-$ chmod +x gui-*.sh
-$ ./gui-*.sh
+$ curl -sLO https://git.io/alis-gui-*
+$ chmod +x alis-gui-*
+$ ./alis-gui-*
 
-$ rm gui-*.sh
+$ rm alis-gui-*
 $ sudo reboot
 ```
