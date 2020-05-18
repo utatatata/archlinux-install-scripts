@@ -167,10 +167,10 @@ sgdisk -n 1::+260M -c 1:"EFI system partition" \
   -t 1:C12A7328-F81F-11D2-BA4B-00A0C93EC93B \
   ${devicepath}
 sgdisk -n 2::+32G -c 2:"Linux x86-64 root (/)" \
-  -t 1:4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709 \
+  -t 2:4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709 \
   ${devicepath}
 sgdisk -n 3:: -c 3:"Linux /home" \
-  -t 1:933AC7E1-2EB4-4F13-B844-0E14E2AEF915 \
+  -t 3:933AC7E1-2EB4-4F13-B844-0E14E2AEF915 \
   ${devicepath}
 
 partitions=$(lsblk -lnpo NAME ${devicepath} | tail -n+2)
