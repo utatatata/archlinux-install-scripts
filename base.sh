@@ -355,7 +355,8 @@ arch-chroot /mnt bash -c \
 ${userpasswd}
 EOF
 # Install
-arch-chroot /mnt pacman --noconfirm -U $(find /home/${username}/yay -type f -name '*.pkg.tar.xz')
+arch-chroot /mnt bash -c \
+  "pacman --noconfirm -U \$(find /home/${username}/yay -type f -name '*.pkg.tar.xz')"
 arch-chroot /mnt rm -rf /home/${username}/yay
 # Remove dependencies
 arch-chroot /mnt pacman --noconfirm -Rns go
