@@ -115,6 +115,7 @@ cat /usr/share/doc/polybar/config >${HOME}/.config/polybar/config
 sed -e 's/^\(modules-left = .*\)$/#\1\nmodules-left = i3/' \
     -e 's/^\(modules-center = .*\)$/#\1/' \
     -e 's/^\(modules-right = .*\)$/#\1\nmodules-right = xbacklight pulseaudio wlan eth battery date powermenu/' \
+    -e '/^bar {$/,/^}$/s/^\(.*\)$/#\1/' \
     -i ${HOME}/.config/polybar/config
 cat <<EOF >${HOME}/.config/polybar/launch.sh
 #!/bin/bash
