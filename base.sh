@@ -286,14 +286,13 @@ sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
   -i /mnt/etc/makepkg.conf
 
 # AUR helper (Yay)
-# Build
-yaydir=/home/${username}yay
+yaydir=/home/${username}/yay
 cmds=$(cat <<EOF
   git clone https://aur.archlinux.org/yay-bin.git $yaydir &&
   chown ${username} $yaydir &&
   cd $yaydir && sudo -u ${username} makepkg &&
   pacman --noconfirm -U \$(find $yaydir -type f -name '*.pkg*') &&
-  cd .. && rm -rf $yaydir &&
+  rm -rf $yaydir &&
   yay -Syy
 EOF
 )
