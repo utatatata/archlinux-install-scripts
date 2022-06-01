@@ -175,8 +175,8 @@ sgdisk -n 3:: -c 3:"Linux /home" \
 
 partitions=$(lsblk -lnpo NAME ${devicepath} | tail -n+2)
 esp=$(echo "${partitions}" | head -n 1)
-root=$(echo "${partitions}" | tail -n 1 | head -n 1)
-home=$(echo "${partitions}" | tail -n 2 | head -n 1)
+root=$(echo "${partitions}" | tail -n 2 | head -n 1)
+home=$(echo "${partitions}" | tail -n 1 | head -n 1)
 
 # Format the partitions
 mkfs.vfat -F32 ${esp} -n "esp"
