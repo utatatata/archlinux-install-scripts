@@ -286,12 +286,18 @@ sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
   -i /mnt/etc/makepkg.conf
 
 # AUR helper (Yay)
-# I don't know how to pass the password to sudo, which is called inside makepkg, so I'm breaking down each installation step
-arch-chroot /mnt sudo -u ${username} git clone https://aur.archlinux.org/yay-bin.git /home/${username}/yay-bin
-arch-chroot /mnt bash -c "cd /home/${username}/yay-bin && sudo -K && sudo -Su ${username} makepkg" <<EOF
-${userpasswd}
+# Build
+yaydir=/home/${username}yay
+cmds=$(cat <<EOF
+  git clone https://aur.archlinux.org/yay-bin.git $yaydir &&
+  chown ${username} $yaydir &&
+  cd $yaydir && sudo -u ${username} makepkg &&
+  pacman --noconfirm -U \$(find $yaydir -type f -name '*.pkg*') &&
+  cd .. && rm -rf $yaydir &&
+  yay -Syy
 EOF
-rm -rf /mnt/home/i/yay-bin
+)
+arch-chroot /mnt bash -c $cmds
 
 # Clock synchronization (systemd-timesyncd)
 cat <<EOF >>/mnt/etc/systemd/timesyncd.conf
@@ -301,9 +307,8 @@ EOF
 arch-chroot /mnt timedatectl set-ntp true
 
 # Swap file
-cmds="'sudo -K && yay --sudoflags -S --noconfirm -S zram-generator zramswap'"
 arch-chroot /mnt bash -c \
-  "sudo -u ${username} bash -c $cmds" <<EOF
+  "sudo -K && sudo -u i yay --sudoflags -S --noconfirm -S zram-generator zramswap" <<EOF
 ${userpasswd}
 EOF
 arch-chroot /mnt systemctl enable zramswap
