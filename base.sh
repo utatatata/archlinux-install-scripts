@@ -295,7 +295,9 @@ arch-chroot /mnt bash -c \
 # Install and setup
 arch-chroot /mnt bash -c \
   "pacman --noconfirm -U \$(find $yaydir -type f -name '*.pkg*') && rm -rf $yaydir"
-arch-chroot /mnt sudo -u ${username} yay --sudoflags -S -Syy
+arch-chroot /mnt sudo -u ${username} yay --sudoflags -S -Syy <<EOF
+${userpasswd}
+EOF
 
 # Clock synchronization (systemd-timesyncd)
 cat <<EOF >>/mnt/etc/systemd/timesyncd.conf
