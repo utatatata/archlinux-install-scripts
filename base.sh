@@ -180,8 +180,8 @@ home=$(echo "${partitions}" | tail -n 1 | head -n 1)
 
 # Format the partitions
 mkfs.fat -F 32 ${esp} -n "esp"
-mkfs.ext4 ${root} -L "root"
-mkfs.ext4 ${home} -L "home"
+mkfs.ext4 -F ${root} -L "root"
+mkfs.ext4 -F ${home} -L "home"
 
 # Mount the file systems
 mount ${root} /mnt
