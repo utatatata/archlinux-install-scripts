@@ -287,16 +287,11 @@ sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
 
 # AUR helper (Yay)
 # I don't know how to pass the password to sudo, which is called inside makepkg, so I'm breaking down each installation step
-cmds=$(cat <<EOF
-  git clone https://aur.archlinux.org/yay-bin.git /home/${username}/yay-bin &&
-  cd /home/${username}/yay-bin &&
-  sudo -K && sudo -Su ${username} makepkg -si --noconfirm &&
-  cd .. && rm -rf yay-bin
-EOF
-)
-arch-chroot /mnt sudo -u ${username} bash -c $cmds <<EOF
+arch-chroot /mnt sudo -u ${username} git clone https://aur.archlinux.org/yay-bin.git /home/${username}/yay-bin
+arch-chroot /mnt sudo -u ${username} bash -c "cd /home/${username}/yay-bin && sudo -K && sudo -Su ${username} makepkg -si --noconfirm" <<EOF
 ${userpasswd}
 EOF
+rm -rf /mnt/home/i/yay-bin
 
 # Clock synchronization (systemd-timesyncd)
 cat <<EOF >>/mnt/etc/systemd/timesyncd.conf
