@@ -363,26 +363,6 @@ arch-chroot /mnt pacman --noconfirm -Rns go
 # Configure
 arch-chroot /mnt sudo -u ${username} yay --save --sudoloop
 
-# Pacman wrapper (Powerpill)
-arch-chroot /mnt bash -c \
-  "sudo -u ${username} sudo -K; sudo -u ${username} yay --sudoflags -S --noconfirm -S powerpill" <<EOF
-${userpasswd}
-EOF
-# Using rsync
-rsyncservers=$(reflector -p rsync -c JP -c KR -c HK -c TW | sed -e '/^#/d' -e '/^$/d')
-pacman --noconfirm -S jq
-jq ".rsync.servers = [$(echo "${rsyncservers}" | sed -e 's/^\(.*\)$/\"\1\"/g' | paste -sd ',')]" \
-  /mnt/etc/powerpill/powerpill.json >./powerpill.json
-mv -f ./powerpill.json /mnt/etc/powerpill/powerpill.json
-# Troubleshooting
-sed -e 's/^\(SigLevel.*\)$/#\1\nSigLevel = PackageRequired/' \
-  -i /mnt/etc/pacman.conf
-# Avoiding multiple definition errors
-sed -e 's/^\(LDFLAGS="\(.*\)"\)$/#\1\nLDFLAGS="\2,-z,muldefs"/' \
-  -i /mnt/etc/makepkg.conf
-# Use Powerpill instead of Pacman inside Yay
-arch-chroot /mnt sudo -u ${username} yay --save --pacman powerpill
-
 # Clock synchronization (systemd-timesyncd)
 cat <<EOF >>/mnt/etc/systemd/timesyncd.conf
 NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
