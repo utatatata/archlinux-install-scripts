@@ -179,29 +179,18 @@ root=$(echo "${partitions}" | tail -n 2 | head -n 1)
 home=$(echo "${partitions}" | tail -n 1 | head -n 1)
 
 # Format the partitions
-mkfs.vfat -F32 ${esp} -n "esp"
-mkfs.ext4 -F ${root} -L "root"
-mkfs.ext4 -F ${home} -L "home"
+mkfs.fat -F 32 ${esp} -n "esp"
+mkfs.ext4 ${root} -L "root"
+mkfs.ext4 ${home} -L "home"
 
 # Mount the file systems
 mount ${root} /mnt
-mkdir -p /mnt/boot
-mount ${esp} /mnt/boot
-mkdir -p /mnt/home
-mount ${home} /mnt/home
-
-# Select the mirrors
-pacman -Sy
-pacman --noconfirm -S reflector
-reflector \
-  -p rsync -p https -p http \
-  -c JP -c KR -c HK -c TW \
-  --save /etc/pacman.d/mirrorlist
+mount --mkdir ${esp} /mnt/boot
+mount --mkdir ${home} /mnt/home
 
 # Install essential packages
 pacstrap /mnt \
   base base-devel linux linux-firmware \
-  dosfstools \
   networkmanager \
   vi vim \
   man-db man-pages texinfo \
@@ -214,10 +203,6 @@ genfstab -U /mnt >>/mnt/etc/fstab
 # Caution: `arch-chroot </path/to/new/root>` invokes bash by default,
 #           but exit cannot be used to get out of bash in a shell script
 #           So, in the following, each command is executed using arch-chroot
-
-# Swap file  (systemd-swap)
-arch-chroot /mnt pacman --noconfirm -S systemd-swap
-arch-chroot /mnt systemctl enable systemd-swap
 
 # Time zone
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
@@ -235,11 +220,6 @@ echo "LANG=en_US.UTF-8" >/mnt/etc/locale.conf
 
 # Network configuration (NetworkManager)
 echo ${hostname} >/mnt/etc/hostname
-cat <<EOF >>/mnt/etc/hosts
-127.0.0.1	localhost
-::1		localhost
-127.0.1.1	${hostname}.localdomain	${hostname}
-EOF
 arch-chroot /mnt systemctl enable NetworkManager
 
 # Root password
@@ -249,20 +229,9 @@ ${rootpasswd}
 EOF
 
 # Boot loader (systemd-boot)
-arch-chroot /mnt bootctl --path=/boot install
+arch-chroot /mnt bootctl install
 # Automatic update
-mkdir -p /mnt/etc/pacman.d/hooks
-cat <<EOF >/mnt/etc/pacman.d/hooks/100-systemd-boot.hook
-[Trigger]
-Type = Package
-Operation = Upgrade
-Target = systemd
-
-[Action]
-Description = Updating systemd-boot
-When = PostTransaction
-Exec = /usr/bin/bootctl update
-EOF
+arch-chroot /mnt systemctl enable systemd-boot-update
 # Loader configuration
 cat <<EOF >/mnt/boot/loader/loader.conf
 default  arch.conf
@@ -290,7 +259,7 @@ EOF
 
 # Privilege elevation (sudo)
 cp /mnt/etc/sudoers ./sudoers
-sed -e 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' \
+sed -e 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' \
   -i ./sudoers
 visudo -qcf ./sudoers
 if [[ "$?" = "0" ]]; then
@@ -301,37 +270,9 @@ else
   exit 1
 fi
 
-# Mirrors (Reflector)
-arch-chroot /mnt pacman --noconfirm -S reflector rsync
-# Pacman hook
-mkdir -p /mnt/etc/pacman.d/hooks
-cat <<EOF >/mnt/etc/pacman.d/hooks/mirrorupgrade.hook
-[Trigger]
-Operation = Upgrade
-Type = Package
-Target = pacman-mirrorlist
-
-[Action]
-Description = Updating pacman-mirrorlist with reflector and removing pacnew...
-When = PostTransaction
-Depends = reflector
-Exec = /bin/sh -c "reflector -c JP -c KR -c HK -c TW --latest 200 --age 24 --sort rate --save /etc/pacman.d/mirrorlist; rm -f /etc/pacman.d/mirrorlist.pacnew"
-EOF
-# Systemd service
-cat <<EOF >/mnt/etc/systemd/system/reflector.service
-[Unit]
-Description=Pacman mirrorlist update
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/reflector -p rsync -p https -p http -c JP -c KR -c HK -c TW --save /etc/pacman.d/mirrorlist
-
-[Install]
-RequiredBy=multi-user.target
-EOF
-arch-chroot /mnt systemctl enable reflector
+# Pacman configuration
+sed -e 's/#ParallelDownloads = 5/ParallelDownloads = 5/' \
+  -i /mnt/etc/pacman.conf
 
 # Improving compile times for makepkg
 sed -e "s/^\(#MAKEFLAGS=.*\)\$/\1\nMAKEFLAGS=\"-j$(nproc)\"/" \
@@ -346,22 +287,14 @@ sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
 
 # AUR helper (Yay)
 # I don't know how to pass the password to sudo, which is called inside makepkg, so I'm breaking down each installation step
-# Install dependencies
-arch-chroot /mnt pacman --noconfirm -S go
-arch-chroot /mnt sudo -u ${username} git clone https://aur.archlinux.org/yay.git /home/${username}/yay
-# Build (makepkg is not allowed to run as root)
-arch-chroot /mnt bash -c \
-  "cd /home/${username}/yay; sudo -u ${username} sudo -K; sudo -Su ${username} makepkg" <<EOF
+buildcmds=$(echo \
+  "git clone https://aur.archlinux.org/yay-bin.git /home/${username}/yay-bin &&" \
+  "cd /home/${username}/yay-bin &&" \
+  "sudo -K && sudo -Su ${username} makepkg -si &&" \
+  "cd .. && rm -rf yay-bin")
+arch-chroot /mnt sudo -u ${username} bash -c $buildcmds <<EOF
 ${userpasswd}
 EOF
-# Install
-arch-chroot /mnt bash -c \
-  "pacman --noconfirm -U \$(find /home/${username}/yay -type f -name '*.pkg.tar.xz')"
-arch-chroot /mnt rm -rf /home/${username}/yay
-# Remove dependencies
-arch-chroot /mnt pacman --noconfirm -Rns go
-# Configure
-arch-chroot /mnt sudo -u ${username} yay --save --sudoloop
 
 # Clock synchronization (systemd-timesyncd)
 cat <<EOF >>/mnt/etc/systemd/timesyncd.conf
@@ -369,6 +302,13 @@ NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.
 FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org
 EOF
 arch-chroot /mnt timedatectl set-ntp true
+
+# Swap file
+arch-chroot /mnt bash -c \
+  "cd /home/${username}/yay; sudo -u ${username} sudo -K; sudo -Su ${username} yay -S zram-generator zramswap" <<EOF
+${userpasswd}
+EOF
+arch-chroot /mnt systemctl enable zramswap
 
 # Unmount all the partitions
 umount -R /mnt
