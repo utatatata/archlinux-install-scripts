@@ -287,16 +287,15 @@ sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
 
 # AUR helper (Yay)
 yaydir=/home/${username}/yay
-cmds=$(cat <<EOF
-  git clone https://aur.archlinux.org/yay-bin.git $yaydir &&
-  chown ${username} $yaydir &&
-  cd $yaydir && sudo -u ${username} makepkg &&
-  pacman --noconfirm -U \$(find $yaydir -type f -name '*.pkg*') &&
-  rm -rf $yaydir &&
-  yay -Syy
-EOF
-)
-arch-chroot /mnt bash -c $cmds
+# Clone sources
+arch-chroot /mnt sudo -u ${username} git clone https://aur.archlinux.org/yay-bin.git $yaydir
+# Build
+arch-chroot /mnt bash -c \
+  "cd $yaydir && sudo -u ${username} makepkg"
+# Install and setup
+arch-chroot /mnt bash -c \
+  "pacman --noconfirm -U \$(find $yaydir -type f -name '*.pkg*') && rm -rf $yaydir"
+arch-chroot /mnt sudo -u ${username} yay --sudoflags -S -Syy
 
 # Clock synchronization (systemd-timesyncd)
 cat <<EOF >>/mnt/etc/systemd/timesyncd.conf
