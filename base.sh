@@ -234,7 +234,7 @@ EOF
 
 # Boot loader (GRUB)
 arch-chroot /mnt pacman --noconfirm -S grub efibootmgr
-arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/mnt/boot --bootloader-id=GRUB
 # Microcode
 arch-chroot /mnt pacman --noconfirm -S ${cpu}-ucode
 
@@ -293,7 +293,7 @@ EOF
 sed -e 's/\(#NTP=\)/\1\nNTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org/' \
     -e 's/\(^#FallbackNTP=.*$\)/\1\nFallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org/' \
     -i /mnt/etc/systemd/timesyncd.conf
-arch-chroot /mnt timedatectl set-ntp true
+# arch-chroot /mnt timedatectl set-ntp true
 
 # Swap file
 arch-chroot /mnt echo 0 > /sys/module/zswap/parameters/enabled
