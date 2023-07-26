@@ -29,7 +29,7 @@ error() {
 
 
 #################### TITLE  ####################
-print_syan "\nArch Linux Install Script (GUI i3)\n\n\n"
+print_cyan "\nArch Linux Install Script (GUI i3)\n\n\n"
 
 #################### User passwd ####################
 
@@ -84,15 +84,6 @@ fi
 
 #################### Font size ####################
 
-is_number() {
-  expr "$1" + 1 >&/dev/null
-  ret=$?
-  if [ $? -lt 2 ]; then
-    
-  else
-  fi
-}
-
 if [[ -v ALIS_FONT_SIZE && \
   "${ALIS_FONT_SIZE}" != "" ]]; then
   if expr "$ALIS_FONT_SIZE" : "[0-9]*$" >&/dev/null; then
@@ -100,7 +91,7 @@ if [[ -v ALIS_FONT_SIZE && \
   fi
 fi
 
-if [[ ! -v ALIS_FONT_SIZE && \
+if [[ ! -v ALIS_FONT_SIZE || \
   "${ALIS_FONT_SIZE}" = "" ]]; then
   while true; do
     read -ep "font size: " ALIS_FONT_SIZE
@@ -177,7 +168,7 @@ set -e 's/mod\+h/mod\+o/' \
     -e 's/mod\+Shift\+semicolon/mod\+l/' \
     -i ${HOME}/.config/i3/config
 # font settings
-set -e 's/^\(font pango.*\)$/\1\nfont pango:Cica ${fontsize}/'
+sed -e 's/\(^font pango.*$\)/\1\nfont pango:Cica ${fontsize}/' \
     -i ${HOME}/.config/i3/config
 
 # Terminal emulator (Kitty)
@@ -227,18 +218,12 @@ export   QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 export GLFW_IM_MODULE=ibus
 EOF
-sudo -K
-sudo -S sed -e '/^\[Hotkey\/ActivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_RALT/' \
-    -e '/^\[Hotkey\/InactivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_LALT/' \
-    -i /usr/share/fcitx/configdesc/config.desc <<EOF
-${userpasswd}
-EOF
-sudo -K
-sudo -S sed -e '/^\[Profile\/IMName\]$/,/^\[/ s/^\(DefaultValue=\)$/\1mozc/' \
-    -e '/^\[Profile\/EnabledIMList\]$/,/^\[/ s/^\(DefaultValue=\)$/\1fcitx-keyboard-us:True,mozc:True,pinyin:False,shuangpin:False,wubi:False,wbpy:False/' \
-    -i /usr/share/fcitx/configdesc/profile.desc <<EOF
-${userpasswd}
-EOF
+fcitx5 &
+sed -e 's/\(^[GroupOrder]$\)/[Group\/0\/Items\/1]\n# Name\nName=mozc\n# Layout\nLayout=\n\n\1/'
+    -i ${HOME}/.config/fcitx5/profile
+sed -e 's/ActivateKey]\n\(0=.*$\)/ActivateKey]\n#\1\n0=Alt+ALt_R/'
+    -e 's/DeactivateKey]\n\(0=.*$\)/DeactivateKey]\n#\1\n0=Alt+ALt_L/'
+    -i ${HOME}/.config/fcitx5/config
 # Config for i3
 cat <<EOF >>${HOME}/.config/i3/config
 
