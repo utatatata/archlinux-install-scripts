@@ -234,7 +234,7 @@ EOF
 
 # Boot loader (GRUB)
 arch-chroot /mnt pacman --noconfirm -S grub efibootmgr
-arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=${esp} --bootloader-id=GRUB
+arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 # Microcode
 arch-chroot /mnt pacman --noconfirm -S ${cpu}-ucode
 
