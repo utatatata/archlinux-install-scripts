@@ -2,20 +2,12 @@
 
 set -eu
 
-# ANSI escape code (https://en.wikipedia.org/wiki/ANSI_escape_code)
-prefix="\x1b["
-suffix="m"
-RESET="${prefix}${suffix}"
-RED="${prefix}31${suffix}"
-GREEN="${prefix}32${suffix}"
-CYAN="${prefix}36${suffix}"
+source ./ansi.sh
 
-error() {
-    printf "${RED}error${RESET}: ${1}\n"
-}
+
 
 #################### TITLE  ####################
-printf "\n${CYAN}Arch Linux Install Script (GUI i3)${RESET}\n\n\n"
+print_syan "\nArch Linux Install Script (GUI i3)\n\n\n"
 
 #################### User passwd ####################
 
@@ -68,6 +60,42 @@ else
     modkey="Mod1"
 fi
 
+#################### Font size ####################
+
+is_number() {
+  expr "$1" + 1 >&/dev/null
+  ret=$?
+  if [ $? -lt 2 ]; then
+    
+  else
+  fi
+}
+
+if [[ -v ALIS_FONT_SIZE && \
+  "${ALIS_FONT_SIZE}" != "" ]]; then
+  if expr "$ALIS_FONT_SIZE" : "[0-9]*$" >&/dev/null; then
+    unset ALIS_FONT_SIZE
+  fi
+fi
+
+if [[ ! -v ALIS_FONT_SIZE && \
+  "${ALIS_FONT_SIZE}" = "" ]]; then
+  while true; do
+    read -ep "font size: " ALIS_FONT_SIZE
+
+    if expr "$ALIS_FONT_SIZE" : "[0-9]*$" >&/dev/null; then
+      break
+    else
+      error "invalid value: font size must be a natural number"
+      echo ""
+    fi
+  done
+
+  echo ""
+fi
+
+fontsize="${ALIS_FONT_SIZE}"
+
 #################### INSTALL ####################
 
 # Xorg
@@ -92,6 +120,12 @@ sudo -S systemctl enable lightdm <<EOF
 ${userpasswd}
 EOF
 
+# Fonts
+sudo -K
+yay --sudoflags -S --noconfirm -S ttf-cica <<EOF
+${userpasswd}
+EOF
+
 # i3
 sudo -K
 yay --sudoflags -S --noconfirm -S i3 <<EOF
@@ -104,48 +138,28 @@ sed -e 's/Mod1/\$mod/g' \
     -e "1s:^\(.*\)$:\1\n\nset \$mod ${modkey}\n:" \
     -e 's/^\(exec i3-config-wizard\)$/#\1/' \
     -i ${HOME}/.config/i3/config
+# vim like cursor move
+set -e 's/mod\+h/mod\+o/' \
+    -e 's/mod\+j/mod\+h/' \
+    -e 's/mod\+k/mod\+j/' \
+    -e 's/mod\+l/mod\+k/' \
+    -e 's/mod\+semicolon/mod\+l/' \
+    -e 's/mod\+Shift\+j/mod\+h/' \
+    -e 's/mod\+Shift\+k/mod\+j/' \
+    -e 's/mod\+Shift\+l/mod\+k/' \
+    -e 's/mod\+Shift\+semicolon/mod\+l/' \
+    -i ${HOME}/.config/i3/config
+# font settings
+set -e 's/^\(font pango.*\)$/\1\nfont pango:Cica ${fontsize}/'
+    -i ${HOME}/.config/i3/config
 
-# Status bar (Polybar)
+# Terminal emulator (Kitty)
 sudo -K
-yay --sudoflags -S --noconfirm -S polybar siji-git ttf-unifont <<EOF
-${userpasswd}
-EOF
-mkdir -p ${HOME}/.config/polybar
-cat /usr/share/doc/polybar/config >${HOME}/.config/polybar/config
-sed -e 's/^\(modules-left = .*\)$/#\1\nmodules-left = i3/' \
-    -e 's/^\(modules-center = .*\)$/#\1/' \
-    -e 's/^\(modules-right = .*\)$/#\1\nmodules-right = xbacklight pulseaudio wlan eth battery date powermenu/' \
-    -e '/^bar {$/,/^}$/s/^\(.*\)$/#\1/' \
-    -i ${HOME}/.config/polybar/config
-cat <<EOF >${HOME}/.config/polybar/launch.sh
-#!/bin/bash
-
-# Terminate already running bar instances
-killall -q polybar
-
-# Wait until the processes have been shut down
-while pgrep -u \$UID -x polybar >/dev/null; do sleep 1; done
-
-# Launch Polybar, using default config location \~/.config/polybar/config
-polybar example &
-
-echo "Polybar launched..."
-EOF
-chmod +x ${HOME}/.config/polybar/launch.sh
-# Config for i3
-cat <<EOF >>${HOME}/.config/i3/config
-
-# Polybar
-exec_always --no-startup-id \$HOME/.config/polybar/launch.sh
-EOF
-
-# Terminal emulator (Alacritty)
-sudo -K
-yay --sudoflags -S --noconfirm -S alacritty <<EOF
+yay --sudoflags -S --noconfirm -S kitty <<EOF
 ${userpasswd}
 EOF
 # Config for i3
-sed -e 's/^\(.*exec i3-sensible-terminal.*\)$/#\1\nbindsym $mod+Return exec alacritty/' \
+sed -e 's/^\(.*exec i3-sensible-terminal.*\)$/#\1\nbindsym $mod+Return exec kitty/' \
     -i ${HOME}/.config/i3/config
 
 # Application launchers (Rofi)
@@ -158,30 +172,33 @@ curl --create-dirs --output ${HOME}/.config/rofi/lb.rasi \
     https://raw.githubusercontent.com/davatorium/rofi-themes/master/Official%20Themes/lb.rasi
 cat <<EOF >${HOME}/.config/rofi/config.rasi
 configuration {
- modi: "window,drun,ssh,combi";
- theme: "lb";
- combi-modi: "window,drun,ssh";
+ modi: "drun,ssh";
+ hide-scrollbar: true;
+ kb-element-next: "";
+ kb-mode-next: "Tab";
 }
+@theme "lb"
 EOF
 # Config for i3
-sed -e 's/^\(.*exec dmenu.*\)$/#\1\nbindsym $mod+d exec rofi -show combi/' \
+sed -e 's/^\(.*exec dmenu.*\)$/#\1\nbindsym $mod+d exec rofi -show/' \
     -i ${HOME}/.config/i3/config
 
 # Sound
 sudo -K
-yay --sudoflags -S --noconfirm -S alsa-utils pulseaudio <<EOF
+yay --sudoflags -S --noconfirm -S alsa-utils <<EOF
 ${userpasswd}
 EOF
 
 # Fcitx
 sudo -K
-yay --sudoflags -S --noconfirm -S fcitx fcitx-im fcitx-mozc fcitx-configtool otf-ipafont <<EOF
+yay --sudoflags -S --noconfirm -S fcitx5-im fcitx5-mozc <<EOF
 ${userpasswd}
 EOF
 cat <<EOF >>${HOME}/.xprofile
-export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
+export  GTK_IM_MODULE=fcitx
+export   QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
+export GLFW_IM_MODULE=ibus
 EOF
 sudo -K
 sudo -S sed -e '/^\[Hotkey\/ActivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_RALT/' \
@@ -198,13 +215,15 @@ EOF
 # Config for i3
 cat <<EOF >>${HOME}/.config/i3/config
 
+#
 # Fcitx
-exec --no-startup-id fcitx
+#
+exec --no-startup-id fcitx5
 EOF
 
-# Web Browsers (FireFox)
+# Web Browsers (chromium)
 sudo -K
-yay --sudoflags -S --noconfirm -S firefox <<EOF
+yay --sudoflags -S --noconfirm -S chromium <<EOF
 ${userpasswd}
 EOF
 
@@ -213,18 +232,11 @@ sudo -K
 yay --sudoflags -S --noconfirm -S fish <<EOF
 ${userpasswd}
 EOF
-cat <<EOF >>${HOME}/.bashrc
-
-# Fish
-exec fish
+chsh -s /bin/fish <<EOF
+${userpasswd}
 EOF
 # Fisher
-curl https://git.io/fisher --create-dirs -sLo ${HOME}/.config/fish/functions/fisher.fish
-# Powerline (Bobthefish)
-cat <<EOF >${HOME}/.config/fish/fishfile
-oh-my-fish/theme-bobthefish
-EOF
-fish -c fisher
+curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
 
 # Graphical image viewers (Feh)
 sudo -K
@@ -238,11 +250,30 @@ yay --sudoflags -S --noconfirm -S spacefm <<EOF
 ${userpasswd}
 EOF
 
+# Screenshot
+sudo -K
+yay --sudoflags -S --noconfirm -S xfce4-screenshooter <<EOF
+${userpasswd}
+EOF
+
+# Editor
+sudo -K
+yay --sudoflags -S --noconfirm -S code <<EOF
+${userpasswd}
+EOF
+# font settings
+cat <<EOF "${HOME}/.config/Code - OSS/User/settings.json"
+{
+    "editor.fontFamily": "Cica",
+    "editor.fontSize": ${fontsize}
+}
+EOF
+
 #################### FINISH ####################
 
 printf "\n\n"
-printf "+--------------------------+\n"
-printf "| ${GREEN}Successfully Installed!!${RESET} |\n"
-printf "+--------------------------+\n\n\n"
+printf      "+--------------------------+\n"
+print_green "| Successfully Installed!! |\n"
+printf      "+--------------------------+\n\n\n"
 
 exit
