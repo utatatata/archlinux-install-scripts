@@ -219,10 +219,10 @@ export XMODIFIERS=@im=fcitx
 export GLFW_IM_MODULE=ibus
 EOF
 fcitx5 &
-sed -e 's/\(^[GroupOrder]$\)/[Group\/0\/Items\/1]\n# Name\nName=mozc\n# Layout\nLayout=\n\n\1/'
+sed -e 's/\(^\[GroupOrder\]$\)/\[Group\/0\/Items\/1\]\n# Name\nName=mozc\n# Layout\nLayout=\n\n\1/'
     -i ${HOME}/.config/fcitx5/profile
-sed -e 's/ActivateKey]\n\(0=.*$\)/ActivateKey]\n#\1\n0=Alt+ALt_R/'
-    -e 's/DeactivateKey]\n\(0=.*$\)/DeactivateKey]\n#\1\n0=Alt+ALt_L/'
+sed -e 's/ActivateKey\]\n\(0=.*$\)/ActivateKey\]\n#\1\n0=Alt+ALt_R/'
+    -e 's/DeactivateKey\]\n\(0=.*$\)/DeactivateKey\]\n#\1\n0=Alt+ALt_L/'
     -i ${HOME}/.config/fcitx5/config
 # Config for i3
 cat <<EOF >>${HOME}/.config/i3/config
