@@ -5,6 +5,7 @@ set -eu
 source ./ansi.sh
 
 
+
 #################### TITLE  ####################
 print_cyan "\nArch Linux Install Script (Base System)\n\n\n"
 
@@ -154,30 +155,24 @@ timedatectl set-ntp true
 
 # Partition the disks
 sgdisk -og ${devicepath}
-sgdisk -n 1::+260M -c 1:"EFI system partition" \
-  -t 1:C12A7328-F81F-11D2-BA4B-00A0C93EC93B \
+sgdisk -n 1::+300M -c 1:"EFI system partition" \
+  -t 1:ef00 \
   ${devicepath}
-sgdisk -n 2::+32G -c 2:"Linux x86-64 root (/)" \
-  -t 2:4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709 \
-  ${devicepath}
-sgdisk -n 3:: -c 3:"Linux /home" \
-  -t 3:933AC7E1-2EB4-4F13-B844-0E14E2AEF915 \
+sgdisk -n 2:: -c 2:"Linux x86-64 root (/)" \
+  -t 2:8300 \
   ${devicepath}
 
 partitions=$(lsblk -lnpo NAME ${devicepath} | tail -n+2)
 esp=$(echo "${partitions}" | head -n 1)
 root=$(echo "${partitions}" | tail -n 2 | head -n 1)
-home=$(echo "${partitions}" | tail -n 1 | head -n 1)
 
 # Format the partitions
 mkfs.fat -F 32 ${esp} -n "esp"
 mkfs.ext4 -F ${root} -L "root"
-mkfs.ext4 -F ${home} -L "home"
 
 # Mount the file systems
 mount ${root} /mnt
 mount --mkdir ${esp} /mnt/boot
-mount --mkdir ${home} /mnt/home
 
 # Install essential packages
 pacstrap /mnt \
@@ -200,12 +195,8 @@ arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 arch-chroot /mnt hwclock --systohc
 
 # Localization
-localegen=$(cat /mnt/etc/locale.gen)
-cat <<EOF >/mnt/etc/locale.gen
-en_US.UTF-8 UTF-8
-ja_JP.UTF-8 UTF-8
-EOF
-echo "${localegen}" >>/mnt/etc/locale.gen
+sed -e 's/^#\(en_US.UTF-8 UTF-8\)$/\1/' \
+    -i /mnt/etc/locale.gen
 arch-chroot /mnt locale-gen
 echo "LANG=en_US.UTF-8" >/mnt/etc/locale.conf
 
@@ -219,26 +210,11 @@ ${rootpasswd}
 ${rootpasswd}
 EOF
 
-# Boot loader (systemd-boot)
-arch-chroot /mnt bootctl install
-# Automatic update
-arch-chroot /mnt systemctl enable systemd-boot-update
-# Loader configuration
-cat <<EOF >/mnt/boot/loader/loader.conf
-default  arch.conf
-timeout  4
-console-mode max
-editor   no
-EOF
-# Adding loaders
+# Boot loader (GRUB)
+arch-chroot /mnt pacman --noconfirm -S grub efibootmgr
+arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=${esp} --bootloader-id=GRUB
+# Microcode
 arch-chroot /mnt pacman --noconfirm -S ${cpu}-ucode
-cat <<EOF >/mnt/boot/loader/entries/arch.conf
-title   Arch Linux
-linux   /vmlinuz-linux
-initrd  /${cpu}-ucode.img
-initrd  /initramfs-linux.img
-options root=UUID=$(blkid -s UUID -o value ${root}) rw
-EOF
 
 # User management
 # Adding a user
@@ -250,7 +226,7 @@ EOF
 
 # Privilege elevation (sudo)
 cp /mnt/etc/sudoers ./sudoers
-sed -e 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' \
+sed -e 's/^# \(%wheel ALL=(ALL:ALL) ALL\)$/\1/' \
   -i ./sudoers
 visudo -qcf ./sudoers
 if [[ "$?" = "0" ]]; then
@@ -262,7 +238,7 @@ else
 fi
 
 # Pacman configuration
-sed -e 's/#ParallelDownloads = 5/ParallelDownloads = 5/' \
+sed -e 's/^#\(ParallelDownloads = 5\)$/\1/' \
   -i /mnt/etc/pacman.conf
 
 # Improving compile times for makepkg
@@ -270,10 +246,10 @@ sed -e "s/^\(#MAKEFLAGS=.*\)\$/\1\nMAKEFLAGS=\"-j$(nproc)\"/" \
   -i /mnt/etc/makepkg.conf
 # Utilizing multiple cores for makepkg
 arch-chroot /mnt pacman --noconfirm -S pigz pbzip2
-sed -e 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z - --threads=0)/' \
-  -e 's/COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' \
-  -e 's/COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(pbzip2 -c -f)/' \
-  -e 's/COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q - --threads=0)/' \
+sed -e 's/\(COMPRESSXZ=(xz -c -z -)\)/\1\nCOMPRESSXZ=(xz -c -z - --threads=0)/' \
+  -e 's/\(COMPRESSGZ=(gzip -c -f -n)\)/\1\nCOMPRESSGZ=(pigz -c -f -n)/' \
+  -e 's/\(COMPRESSBZ2=(bzip2 -c -f)\)/\1\nCOMPRESSBZ2=(pbzip2 -c -f)/' \
+  -e 's/\(COMPRESSZST=(zstd -c -z -q -)\)/\1\nCOMPRESSZST=(zstd -c -z -q - --threads=0)/' \
   -i /mnt/etc/makepkg.conf
 
 # AUR helper (Yay)
@@ -281,6 +257,7 @@ yaydir=/home/${username}/yay
 # Clone sources
 arch-chroot /mnt sudo -u ${username} git clone https://aur.archlinux.org/yay-bin.git $yaydir
 # Build
+# Since 'makepkg -si' uses sudo internally and is not interactive, it does its internal processing separately.
 arch-chroot /mnt bash -c \
   "cd $yaydir && sudo -u ${username} makepkg"
 # Install and setup
@@ -298,11 +275,16 @@ EOF
 arch-chroot /mnt timedatectl set-ntp true
 
 # Swap file
-arch-chroot /mnt bash -c \
-  "sudo -K && sudo -u i yay --sudoflags -S --noconfirm -S zram-generator zramswap" <<EOF
-${userpasswd}
+arch-chroot /mnt echo 0 > /sys/module/zswap/parameters/enabled
+arch-chroot /mnt pacman --noconfirm -S zram-generator
+cat <<EOF >/mnt/etc/systemd/zram-generator.conf
+[zram0]
+zram-size = ram
+compression-algorithm = zstd
+swap-priority = 100
+fs-type = swap
 EOF
-arch-chroot /mnt systemctl enable zramswap
+arch-chroot /mnt systemctl enable systemd-zram-setup@zram0
 
 # Unmount all the partitions
 umount -R /mnt
