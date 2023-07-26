@@ -2,20 +2,11 @@
 
 set -eu
 
-# ANSI escape code (https://en.wikipedia.org/wiki/ANSI_escape_code)
-prefix="\x1b["
-suffix="m"
-RESET="${prefix}${suffix}"
-RED="${prefix}31${suffix}"
-GREEN="${prefix}32${suffix}"
-CYAN="${prefix}36${suffix}"
+source ./ansi.sh
 
-error() {
-  printf "${RED}error${RESET}: ${1}\n"
-}
 
 #################### TITLE  ####################
-printf "\n${CYAN}Arch Linux Install Script (Base System)${RESET}\n\n\n"
+print_cyan "\nArch Linux Install Script (Base System)\n\n\n"
 
 #################### Install device path ####################
 
@@ -319,8 +310,8 @@ umount -R /mnt
 #################### FINISH ####################
 
 printf "\n\n"
-printf "+--------------------------+\n"
-printf "| ${GREEN}Successfully Installed!!${RESET} |\n"
-printf "+--------------------------+\n\n\n"
+printf      "+--------------------------+\n"
+print_green "| Successfully Installed!! |\n"
+printf      "+--------------------------+\n\n\n"
 
 exit
