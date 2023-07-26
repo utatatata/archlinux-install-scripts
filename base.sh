@@ -290,10 +290,9 @@ ${userpasswd}
 EOF
 
 # Clock synchronization (systemd-timesyncd)
-cat <<EOF >>/mnt/etc/systemd/timesyncd.conf
-NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org
-FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org
-EOF
+sed -i 's/\(#NTP=\)/\1\nNTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org/'
+    -i 's/\(#FallbackNTP=.*\)$/\1\nFallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org/'
+    -e /mnt/etc/systemd/timesyncd.conf
 arch-chroot /mnt timedatectl set-ntp true
 
 # Swap file
