@@ -120,6 +120,11 @@ fontsize="${ALIS_FONT_SIZE}"
 
 #################### INSTALL ####################
 
+# Clock synchronization
+timedatectl set-ntp true <<EOF
+${userpasswd}
+EOF
+
 # Xorg
 sudo -K
 yay --sudoflags -S --noconfirm -S xorg-server ${videodriver} <<EOF

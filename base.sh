@@ -294,9 +294,6 @@ EOF
 sed -e 's/\(#NTP=\)/\1\nNTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org/' \
     -e 's/\(^#FallbackNTP=.*$\)/\1\nFallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org/' \
     -i /mnt/etc/systemd/timesyncd.conf
-arch-chroot /mnt sudo -u ${username} sudo timedatectl set-ntp true <<EOF
-${userpasswd}
-EOF
 
 # Swap file
 arch-chroot /mnt echo 0 > /sys/module/zswap/parameters/enabled
