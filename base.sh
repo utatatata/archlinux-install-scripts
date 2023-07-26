@@ -186,7 +186,7 @@ sgdisk -n 2:: -c 2:"Linux x86-64 root (/)" \
 
 partitions=$(lsblk -lnpo NAME ${devicepath} | tail -n+2)
 esp=$(echo "${partitions}" | head -n 1)
-root=$(echo "${partitions}" | tail -n 2 | head -n 1)
+root=$(echo "${partitions}" | tail -n 1)
 
 # Format the partitions
 mkfs.fat -F 32 ${esp} -n "esp"
