@@ -178,10 +178,10 @@ timedatectl set-ntp true
 # Partition the disks
 sgdisk -og ${devicepath}
 sgdisk -n 1::+300M -c 1:"EFI system partition" \
-  -t 1:ef00 \
+  -t 1:C12A7328-F81F-11D2-BA4B-00A0C93EC93B \
   ${devicepath}
 sgdisk -n 2:: -c 2:"Linux x86-64 root (/)" \
-  -t 2:8300 \
+  -t 2:4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709 \
   ${devicepath}
 
 partitions=$(lsblk -lnpo NAME ${devicepath} | tail -n+2)
