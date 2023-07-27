@@ -204,7 +204,7 @@ ${userpasswd}
 EOF
 # Themes & settings
 alacrittyconfigdir=${configdir}/alacritty
-curl --create-dirs --output ${alacrittyconfigdir}/themes/xterm.yaml \
+curl --create-dirs --output ${alacrittyconfigdir}/themes/themes/xterm.yaml \
   https://raw.githubusercontent.com/alacritty/alacritty-theme/master/themes/xterm.yaml
 cat <<EOF >${alacrittyconfigdir}/alacritty.yml
 import:
@@ -232,38 +232,12 @@ export   QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 EOF
 fcitx5configdir=${configdir}/fcitx5
-mkdir -p ${fcitx5configdir}
-cat <<EOF >${fcitx5configdir}/profile
-[Groups/0]
-Name = Default
-Default Layout=us
-DefaultIM=mozc
-
-[Groups0/Items/0]
-Name=keyboard-us
-Layout=
-
-[Groups0/Items/1]
-Name=mozc
-Layout=
-
-[GroupOrder]
-0=Default
-EOF
-cat <<EOF >${fcitx5configdir}/config
-[Hotkey/ActivateKeys]
-0=Alt+Alt_R
-
-[Hotkey/DeactivateKeys]
-0=Alt+Alt_L
-
-EOF
-# fcitx5 &>/dev/null
-# sed -e 's/\(^\[GroupOrder\]$\)/\[Group\/0\/Items\/1\]\n# Name\nName=mozc\n# Layout\nLayout=\n\n\1/'
-#     -i ${fcitx5configdir}/profile
-# sed -e 's/ActivateKey\]\n\(0=.*$\)/ActivateKey\]\n#\1\n0=Alt+ALt_R/'
-#     -e 's/DeactivateKey\]\n\(0=.*$\)/DeactivateKey\]\n#\1\n0=Alt+ALt_L/'
-#     -i ${fcitx5configdir}/config
+fcitx5-configtool &>/dev/null
+sed -e 's/\(^\[GroupOrder\]$\)/\[Group\/0\/Items\/1\]\n# Name\nName=mozc\n# Layout\nLayout=\n\n\1/'
+    -i ${fcitx5configdir}/profile
+sed -e 's/ActivateKey\]\n\(0=.*$\)/ActivateKey\]\n#\1\n0=Alt+ALt_R/'
+    -e 's/DeactivateKey\]\n\(0=.*$\)/DeactivateKey\]\n#\1\n0=Alt+ALt_L/'
+    -i ${fcitx5configdir}/config
 # Config for i3
 cat <<EOF >>${i3configdir}/config
 
