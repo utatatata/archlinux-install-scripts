@@ -111,11 +111,6 @@ fontsize="${ALIS_FONT_SIZE}"
 
 #################### INSTALL ####################
 
-# Clock synchronization
-timedatectl set-ntp true <<EOF
-${userpasswd}
-EOF
-
 # Xorg
 sudo -K
 yay --sudoflags -S --noconfirm -S xorg-server ${videodriver} <<EOF
@@ -218,12 +213,38 @@ export   QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 export GLFW_IM_MODULE=ibus
 EOF
-fcitx5 &
-sed -e 's/\(^\[GroupOrder\]$\)/\[Group\/0\/Items\/1\]\n# Name\nName=mozc\n# Layout\nLayout=\n\n\1/'
-    -i ${HOME}/.config/fcitx5/profile
-sed -e 's/ActivateKey\]\n\(0=.*$\)/ActivateKey\]\n#\1\n0=Alt+ALt_R/'
-    -e 's/DeactivateKey\]\n\(0=.*$\)/DeactivateKey\]\n#\1\n0=Alt+ALt_L/'
-    -i ${HOME}/.config/fcitx5/config
+mkdir -p ${HOME}/.config/fcitx5
+cat <<EOF ${HOME}/.config/fcitx5/profile
+[Groups/0]
+Name = Default
+Default Layout=us
+DefaultIM=mozc
+
+[Groups0/Items/0]
+Name=keyboard-us
+Layout=
+
+[Groups0/Items/1]
+Name=mozc
+Layout=
+
+[GroupOrder]
+0=Default
+EOF
+cat <<EOF ${HOME}/.config/fcitx5/config
+[Hotkey/ActivateKeys]
+0=Alt+Alt_R
+
+[Hotkey/DeactivateKeys]
+0=Alt+Alt_L
+
+EOF
+# fcitx5 &>/dev/null
+# sed -e 's/\(^\[GroupOrder\]$\)/\[Group\/0\/Items\/1\]\n# Name\nName=mozc\n# Layout\nLayout=\n\n\1/'
+#     -i ${HOME}/.config/fcitx5/profile
+# sed -e 's/ActivateKey\]\n\(0=.*$\)/ActivateKey\]\n#\1\n0=Alt+ALt_R/'
+#     -e 's/DeactivateKey\]\n\(0=.*$\)/DeactivateKey\]\n#\1\n0=Alt+ALt_L/'
+#     -i ${HOME}/.config/fcitx5/config
 # Config for i3
 cat <<EOF >>${HOME}/.config/i3/config
 
