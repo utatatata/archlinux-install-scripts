@@ -73,9 +73,8 @@ Scripts for Arch Linux installation
 
 ### `gui-xfce.sh`
 
-:::note alert
-NOT UPDATED
-:::
+> note
+> NOT UPDATED
 
 - Display server (Xorg)
 - Display manager (LightDM)
