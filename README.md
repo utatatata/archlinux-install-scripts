@@ -73,7 +73,6 @@ Scripts for Arch Linux installation
 
 ### `gui-xfce.sh`
 
-> note
 > NOT UPDATED
 
 - Display server (Xorg)
