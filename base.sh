@@ -200,7 +200,7 @@ mount --mkdir ${esp} /mnt/boot
 pacstrap /mnt \
   base base-devel linux linux-firmware \
   networkmanager \
-  vi vim \
+  vi gvim \
   man-db man-pages texinfo \
   git
 
