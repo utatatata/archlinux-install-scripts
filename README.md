@@ -139,7 +139,9 @@ $ sudo reboot
 
 再起動後、Fcitx5の設定を行ってください。
 
-まず、「Input Method」のタブを開き、インプットメソッドとしてmozcを追加します。 
+まず、`fcitx5-configtool`を起動します。
+
+「Input Method」のタブを開き、インプットメソッドとしてmozcを追加します。 
 
 ![](fcitx5-input-method.png)
 
