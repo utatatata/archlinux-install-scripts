@@ -232,7 +232,9 @@ export   QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 EOF
 fcitx5configdir=${configdir}/fcitx5
+set +e
 fcitx5-configtool &>/dev/null
+set -e
 sed -e 's/\(^\[GroupOrder\]$\)/\[Group\/0\/Items\/1\]\n# Name\nName=mozc\n# Layout\nLayout=\n\n\1/'
     -i ${fcitx5configdir}/profile
 sed -e 's/ActivateKey\]\n\(0=.*$\)/ActivateKey\]\n#\1\n0=Alt+ALt_R/'
