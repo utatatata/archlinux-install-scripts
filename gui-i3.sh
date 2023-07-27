@@ -236,7 +236,7 @@ Layout=
 [GroupOrder]
 0=Default
 EOF
-cat <<EOF >${fcitx5configdir}
+cat <<EOF >${fcitx5configdir}/config
 [Hotkey/ActivateKeys]
 0=Alt+Alt_R
 
