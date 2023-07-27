@@ -214,7 +214,7 @@ export XMODIFIERS=@im=fcitx
 export GLFW_IM_MODULE=ibus
 EOF
 mkdir -p ${HOME}/.config/fcitx5
-cat <<EOF ${HOME}/.config/fcitx5/profile
+cat <<EOF >${HOME}/.config/fcitx5/profile
 [Groups/0]
 Name = Default
 Default Layout=us
@@ -231,7 +231,7 @@ Layout=
 [GroupOrder]
 0=Default
 EOF
-cat <<EOF ${HOME}/.config/fcitx5/config
+cat <<EOF >${HOME}/.config/fcitx5/config
 [Hotkey/ActivateKeys]
 0=Alt+Alt_R
 
@@ -295,7 +295,7 @@ yay --sudoflags -S --noconfirm -S code <<EOF
 ${userpasswd}
 EOF
 # font settings
-cat <<EOF "${HOME}/.config/Code - OSS/User/settings.json"
+cat <<EOF >"${HOME}/.config/Code - OSS/User/settings.json"
 {
     "editor.fontFamily": "Cica",
     "editor.fontSize": ${fontsize}
