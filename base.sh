@@ -197,10 +197,11 @@ mount ${root} /mnt
 mount --mkdir ${esp} /mnt/boot
 
 # Install essential packages
+# use gvim instead of vim because clipboard not working in vim
 pacstrap /mnt \
   base base-devel linux linux-firmware \
   networkmanager \
-  vi gvim \ # clipboard not working in vim
+  vi gvim \
   man-db man-pages texinfo \
   git
 
