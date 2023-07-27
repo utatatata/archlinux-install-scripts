@@ -194,7 +194,7 @@ configuration {
 @theme "lb"
 EOF
 # Config for i3
-sed -e 's/\(^bindsym.*dmenu_run$\)/#\1\nbindsym $mod+d exec --no-startup-id rofi -show/'
+sed -e 's/\(^bindsym.*dmenu_run$\)/# \1\nbindsym $mod+d exec --no-startup-id rofi -show/' \
     -i ${i3configdir}/config
 
 # Terminal emulator (Alacritty)
