@@ -41,23 +41,6 @@ Scripts for Arch Linux installation
 - ALIS_USER_NAME
 - ALIS_USER_PASSWD
 
-### `gui-xfce.sh`
-
-- Display server (Xorg)
-- Display manager (LightDM)
-- Desktop environment (Xfce)
-- Tools for sound management (ALSA, PulseAudio)
-- 日本語入力 (Fcitx, Mozc)
-  - 左 Alt で英字入力、右 Alt で日本語入力
-  - システムロケールは英語
-- Web browser (FireFox)
-
-#### Available environment variables
-
-- ALIS_USER_PASSWD
-- ALIS_VIDEO_DRIVER
-  - See [Xorg#Driver_installation - ArchWiki](https://wiki.archlinux.org/index.php/Xorg#Driver_installation)
-
 ### `gui-i3.sh`
 
 - Display server (Xorg)
@@ -87,6 +70,27 @@ Scripts for Arch Linux installation
 - ALIS_I3_MODIFIER_KEY
   - `win` or `alt`
 - ALIS_FONT_SIZE
+
+### `gui-xfce.sh`
+
+:::note alert
+NOT UPDATED
+:::
+
+- Display server (Xorg)
+- Display manager (LightDM)
+- Desktop environment (Xfce)
+- Tools for sound management (ALSA, PulseAudio)
+- 日本語入力 (Fcitx, Mozc)
+  - 左 Alt で英字入力、右 Alt で日本語入力
+  - システムロケールは英語
+- Web browser (FireFox)
+
+#### Available environment variables
+
+- ALIS_USER_PASSWD
+- ALIS_VIDEO_DRIVER
+  - See [Xorg#Driver_installation - ArchWiki](https://wiki.archlinux.org/index.php/Xorg#Driver_installation)
 
 ## Usage
 
