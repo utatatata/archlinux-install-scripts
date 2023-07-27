@@ -6,11 +6,30 @@ set -eu
 prefix="\x1b["
 suffix="m"
 RESET="${prefix}${suffix}"
+RED="${prefix}31${suffix}"
 GREEN="${prefix}32${suffix}"
 CYAN="${prefix}36${suffix}"
 
+print_red() {
+  printf "${RED}${1}${RESET}"
+}
+print_green() {
+  printf "${GREEN}${1}${RESET}"
+}
+print_cyan() {
+  printf "${CYAN}${1}${RESET}"
+}
+
+error() {
+  # printf "${RED}error${RESET}: ${1}\n"
+  print_red "error";
+  printf ": ${1}\n"
+}
+
+
+
 #################### TITLE  ####################
-printf "\n${CYAN}Arch Linux Install Script (GUI Xfce)${RESET}\n\n\n"
+print_cyan "\nArch Linux Install Script (GUI Xfce)\n\n\n"
 
 #################### User passwd ####################
 
@@ -63,25 +82,13 @@ EOF
 
 # Fcitx
 sudo -K
-yay --sudoflags -S --noconfirm -S fcitx fcitx-im fcitx-mozc fcitx-configtool otf-ipafont <<EOF
+yay --sudoflags -S --noconfirm -S fcitx5-im fcitx5-mozc otf-ipafont <<EOF
 ${userpasswd}
 EOF
 cat <<EOF >>${HOME}/.xprofile
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
-EOF
-sudo -K
-sudo -S sed -e '/^\[Hotkey\/ActivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_RALT/' \
-  -e '/^\[Hotkey\/InactivateKey\]$/,/^\[/ s/^\(DefaultValue=\)$/\1ALT_LALT/' \
-  -i /usr/share/fcitx/configdesc/config.desc <<EOF
-${userpasswd}
-EOF
-sudo -K
-sudo -S sed -e '/^\[Profile\/IMName\]$/,/^\[/ s/^\(DefaultValue=\)$/\1mozc/' \
-  -e '/^\[Profile\/EnabledIMList\]$/,/^\[/ s/^\(DefaultValue=\)$/\1fcitx-keyboard-us:True,mozc:True,pinyin:False,shuangpin:False,wubi:False,wbpy:False/' \
-  -i /usr/share/fcitx/configdesc/profile.desc <<EOF
-${userpasswd}
 EOF
 
 # Web Browser(FireFox)
@@ -93,8 +100,8 @@ EOF
 #################### FINISH ####################
 
 printf "\n\n"
-printf "+--------------------------+\n"
-printf "| ${GREEN}Successfully Installed!!${RESET} |\n"
-printf "+--------------------------+\n\n\n"
+printf      "+--------------------------+\n"
+print_green "| Successfully Installed!! |\n"
+printf      "+--------------------------+\n\n\n"
 
 exit
