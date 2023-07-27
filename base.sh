@@ -218,8 +218,8 @@ arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 arch-chroot /mnt hwclock --systohc
 
 # Localization
-sed -e 's/^#\(en_US.UTF-8 UTF-8\)$/\1/' \
-    -e 's/^#\(ja_JP.UTF-8 UTF-8\)$/\1/' \
+sed -e 's/#\(en_US.UTF-8 UTF-8\)/\1/' \
+    -e 's/#\(ja_JP.UTF-8 UTF-8\)/\1/' \
     -i /mnt/etc/locale.gen
 arch-chroot /mnt locale-gen
 echo "LANG=en_US.UTF-8" >/mnt/etc/locale.conf
