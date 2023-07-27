@@ -169,14 +169,11 @@ set -e 's/mod\+h/mod\+o/' \
 sed -e 's/\(^font pango.*$\)/\1\nfont pango:Cica ${fontsize}/' \
     -i ${i3configdir}/config
 
-# Terminal emulator (Kitty)
+# Status bar (i3status)
 sudo -K
-yay --sudoflags -S --noconfirm -S kitty <<EOF
+yay --sudoflags -S --noconfirm -S i3status <<EOF
 ${userpasswd}
 EOF
-# Config for i3
-sed -e 's/^\(.*exec i3-sensible-terminal.*\)$/#\1\nbindsym $mod+Return exec kitty/' \
-    -i ${i3configdir}/config
 
 # Application launchers (Rofi)
 sudo -K
@@ -200,6 +197,24 @@ EOF
 sed -e 's/^\(.*exec dmenu.*\)$/#\1\nbindsym $mod+d exec rofi -show/' \
     -i ${i3configdir}/config
 
+# Terminal emulator (Alacritty)
+sudo -K
+yay --sudoflags -S --noconfirm -S alacritty <<EOF
+${userpasswd}
+EOF
+# Themes & settings
+alacrittyconfigdir=${configdir}/alacritty
+mkdir -p ${alacrittyconfigdir}/themes
+git clone https://github.com/alacritty/alacritty-themes ${alacrittyconfigdir}/themes
+cat <<EOF >${alacrittyconfigdir}/alacritty.yml
+import:
+  - ~/.config/alacritty/themes/themes/xterm.yaml
+
+font:
+  family: Cica
+  size: ${fontsize}
+EOF
+
 # Sound
 sudo -K
 yay --sudoflags -S --noconfirm -S alsa-utils <<EOF
@@ -215,7 +230,6 @@ cat <<EOF >>${HOME}/.xprofile
 export  GTK_IM_MODULE=fcitx
 export   QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
-export GLFW_IM_MODULE=ibus
 EOF
 fcitx5configdir=${configdir}/fcitx5
 mkdir -p ${fcitx5configdir}
@@ -251,7 +265,7 @@ EOF
 #     -e 's/DeactivateKey\]\n\(0=.*$\)/DeactivateKey\]\n#\1\n0=Alt+ALt_L/'
 #     -i ${fcitx5configdir}/config
 # Config for i3
-cat <<EOF >${i3configdir}/config
+cat <<EOF >>${i3configdir}/config
 
 #
 # Fcitx
