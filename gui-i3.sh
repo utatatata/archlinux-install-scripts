@@ -251,7 +251,7 @@ EOF
 #     -e 's/DeactivateKey\]\n\(0=.*$\)/DeactivateKey\]\n#\1\n0=Alt+ALt_L/'
 #     -i ${fcitx5configdir}/config
 # Config for i3
-cat <<EOF >>${i3configdir}/config
+cat <<EOF >${i3configdir}/config
 
 #
 # Fcitx
@@ -301,7 +301,7 @@ ${userpasswd}
 EOF
 codeconfigdir="${configdir}/Code - OSS"
 # font settings
-mkdir -p ${codeconfigdir}/User
+mkdir -p "${codeconfigdir}/User"
 cat <<EOF >"${codeconfigdir}/User/settings.json"
 {
     "editor.fontFamily": "Cica",
