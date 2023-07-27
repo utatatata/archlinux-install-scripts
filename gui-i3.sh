@@ -204,8 +204,8 @@ ${userpasswd}
 EOF
 # Themes & settings
 alacrittyconfigdir=${configdir}/alacritty
-mkdir -p ${alacrittyconfigdir}/themes
-git clone https://github.com/alacritty/alacritty-themes ${alacrittyconfigdir}/themes
+curl --create-dirs --output ${alacrittyconfigdir}/themes/xterm.yaml \
+  https://raw.githubusercontent.com/alacritty/alacritty-theme/master/themes/xterm.yaml
 cat <<EOF >${alacrittyconfigdir}/alacritty.yml
 import:
   - ~/.config/alacritty/themes/themes/xterm.yaml
