@@ -221,7 +221,7 @@ yay --sudoflags -S --noconfirm -S alsa-utils <<EOF
 ${userpasswd}
 EOF
 
-# Fcitx
+# Fcitx5
 sudo -K
 yay --sudoflags -S --noconfirm -S fcitx5-im fcitx5-mozc <<EOF
 ${userpasswd}
