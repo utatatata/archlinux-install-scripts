@@ -79,7 +79,7 @@ Scripts for Arch Linux installation
 - Display manager (LightDM)
 - Desktop environment (Xfce)
 - Tools for sound management (ALSA, PulseAudio)
-- 日本語入力 (Fcitx, Mozc)
+- 日本語入力 (Fcitx5, Mozc)
   - 左 Alt で英字入力、右 Alt で日本語入力
   - システムロケールは英語
 - Web browser (FireFox)
