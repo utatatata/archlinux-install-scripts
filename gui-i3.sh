@@ -250,7 +250,7 @@ Layout=
 [GroupOrder]
 0=Default
 EOF
-cat <<EOF <${fcitx5configdir}/config
+cat <<EOF >${fcitx5configdir}/config
 [Hotkey]
 
 [Hotkey/ActivateKeys]
