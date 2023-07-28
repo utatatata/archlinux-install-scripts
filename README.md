@@ -137,17 +137,3 @@ $ rm alis-gui-*
 $ sudo reboot
 ```
 
-再起動後、Fcitx5の設定を行ってください。
-
-まず、`fcitx5-configtool`を起動します。
-
-「Input Method」のタブを開き、インプットメソッドとしてmozcを追加します。 
-
-![](fcitx5-input-method.png)
-
-次に、「Global Options」のタブを開き、「Activate Input Method」に
-右Alt（もしくは日本語入力に切り替えたいキー）を、
-「Deactivate Input Method」に左Alt（もしくは英語入力に切り替えたいキー）を設定します。
-
-![](fcitx5-global-options.png)
-
